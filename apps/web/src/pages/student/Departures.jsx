@@ -27,19 +27,19 @@ export default function DeparturesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-clay-text">Departures</h1>
+        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">Departures</h1>
         <p className="text-clay-muted text-sm">Browse and book available transport routes</p>
       </div>
 
       {/* Filters */}
       <div className="clay-card">
         <div className="flex flex-wrap gap-3">
-          <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+          <div className="flex items-center gap-2 flex-1 min-w-0 sm:min-w-[200px]">
             <Search size={18} className="text-clay-muted" />
             <input type="text" value={filter.from} onChange={(e) => setFilter((f) => ({ ...f, from: e.target.value }))}
               className="clay-input" placeholder="From city..." />
           </div>
-          <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+          <div className="flex items-center gap-2 flex-1 min-w-0 sm:min-w-[200px]">
             <Search size={18} className="text-clay-muted" />
             <input type="text" value={filter.to} onChange={(e) => setFilter((f) => ({ ...f, to: e.target.value }))}
               className="clay-input" placeholder="To city..." />
@@ -58,13 +58,13 @@ export default function DeparturesPage() {
           {filtered.map((dep, i) => (
             <motion.div key={dep.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
               <Link to={`/departures/${dep.id}`} className="clay-card hover:shadow-clay-lg transition-all block">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-start gap-3 sm:items-center sm:gap-4">
                     <div className="w-14 h-14 bg-clay-primary/10 rounded-clay flex items-center justify-center">
                       <Bus className="text-clay-primary" size={24} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-clay-text text-lg">{dep.route}</h3>
+                      <h3 className="font-bold text-clay-text text-lg sm:text-xl">{dep.route}</h3>
                       <div className="flex flex-wrap items-center gap-3 mt-1 text-sm text-clay-muted">
                         <span className="flex items-center gap-1"><MapPin size={14} />{dep.fromCity} → {dep.toCity}</span>
                         <span className="flex items-center gap-1"><Calendar size={14} />{new Date(dep.departureDate).toLocaleDateString()}</span>

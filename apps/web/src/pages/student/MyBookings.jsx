@@ -70,12 +70,12 @@ export default function MyBookingsPage() {
   return (
     <><div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-clay-text">My Bookings</h1>
+        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">My Bookings</h1>
         <p className="text-clay-muted text-sm">Manage your transport bookings</p>
       </div>
 
       {/* Tab Navigation */}
-      <div className="clay-card p-1 flex gap-1">
+      <div className="clay-card p-1 flex flex-col gap-1 sm:flex-row">
         <button
           onClick={() => setActiveTab('upcoming')}
           className={`flex-1 px-4 py-2 rounded-clay font-medium transition-all ${
@@ -112,8 +112,8 @@ export default function MyBookingsPage() {
               className="clay-card relative overflow-hidden">
               {b.gender === 'male' && <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div>}
               {b.gender === 'female' && <div className="absolute top-0 left-0 w-1.5 h-full bg-pink-500"></div>}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pl-1">
-                <div className="flex items-center gap-4">
+              <div className="flex flex-col gap-4 pl-1 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3 sm:items-center sm:gap-4">
                   <div className="w-12 h-12 bg-clay-primary/10 rounded-clay flex items-center justify-center">
                     <Bus className="text-clay-primary" size={20} />
                   </div>
@@ -135,13 +135,13 @@ export default function MyBookingsPage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   <span className={`clay-badge ${statusColor(b.status)}`}>{b.status?.replace('_', ' ')}</span>
                   <span className="font-bold text-clay-primary">PKR {b.totalAmount}</span>
                 </div>
               </div>
               {activeTab === 'upcoming' && b.status === 'pending_approval' && (
-                <div className="mt-4 pt-4 border-t border-clay-border flex gap-2">
+                <div className="mt-4 pt-4 border-t border-clay-border flex flex-col gap-2 sm:flex-row">
                   <button onClick={() => cancelBooking(b.id)}
                     className="clay-btn-danger clay-btn-sm flex items-center gap-1">
                     <X size={14} /> Cancel Booking

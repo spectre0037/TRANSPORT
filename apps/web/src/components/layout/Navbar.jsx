@@ -56,12 +56,12 @@ export default function Navbar() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-clay-primary text-white shadow-lg' : 'bg-transparent text-clay-primary'}`}>
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <button type="button" onClick={() => handleAnchor('/#hero')} className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-clay-border bg-white shadow-clay">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-3 sm:px-6 lg:px-8">
+        <button type="button" onClick={() => handleAnchor('/#hero')} className="flex min-w-0 items-center gap-2 sm:gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-clay-border bg-white shadow-clay sm:h-11 sm:w-11">
             <img src={logoImage} alt="TaleemXpress logo" className="h-full w-full object-cover" />
           </span>
-          <span className={`font-display text-xl font-extrabold tracking-tight ${scrolled ? 'text-clay-accent' : 'text-clay-primary'}`}>
+          <span className={`truncate font-display text-lg font-extrabold tracking-tight sm:text-xl ${scrolled ? 'text-clay-accent' : 'text-clay-primary'}`}>
             TaleemXpress
           </span>
         </button>

@@ -58,21 +58,21 @@ const faqs = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-clay-bg text-clay-text">
+    <div className="min-h-screen bg-clay-bg text-clay-text overflow-x-hidden">
       <Navbar />
 
-      <main className="overflow-hidden pt-24">
-        <section id="hero" className="relative px-6 pb-16 pt-10 md:pb-24">
+      <main className="overflow-hidden pt-20 sm:pt-24">
+        <section id="hero" className="relative px-4 pb-14 pt-8 sm:px-6 md:pb-24">
           <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="space-y-6">
               <span className="clay-badge bg-clay-accent text-clay-primary">Student-led &amp; Organized Transport</span>
-              <div className="space-y-2 font-display text-5xl font-black leading-none md:text-7xl">
-                <div className="text-clay-primary font-black text-clay-primary">TaleemXpress</div>
-                <div className="text-clay-primary font-black text-clay-primary">Built for <span className="text-clay-accent">GIKI</span></div>
-                <div className="text-clay-primary font-black text-clay-primary">Students</div>
+              <div className="space-y-2 font-display text-4xl font-black leading-none sm:text-5xl md:text-7xl">
+                <div className="font-black text-clay-primary">TaleemXpress</div>
+                <div className="font-black text-clay-primary">Built for <span className="text-clay-accent">GIKI</span></div>
+                <div className="font-black text-clay-primary">Students</div>
               </div>
-              <p className="max-w-2xl text-lg leading-8 text-clay-text-muted">Comfortable, safe, and reliable travel between GIKI and nearby cities. Book online, pick your seat, pay securely — and get your ticket once confirmed. Maximum 9-10 students per Hiace. Fixed transparent pricing. No hidden charges. Routes: ISB/RWP, Taxila/Wah/Hasan Abdal, Peshawar/Mardan, Abbottabad/Mansehra.</p>
-              <div className="flex flex-wrap gap-3">
+              <p className="max-w-2xl text-base leading-7 text-clay-text-muted sm:text-lg sm:leading-8">Comfortable, safe, and reliable travel between GIKI and nearby cities. Book online, pick your seat, pay securely — and get your ticket once confirmed. Maximum 9-10 students per Hiace. Fixed transparent pricing. No hidden charges. Routes: ISB/RWP, Taxila/Wah/Hasan Abdal, Peshawar/Mardan, Abbottabad/Mansehra.</p>
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link to="/bookings" className="clay-btn-primary inline-flex items-center gap-2">Book a Seat <ArrowRight size={16} /></Link>
                 <Link to="/how-to-book" className="clay-btn-outline inline-flex items-center gap-2">How to Book</Link>
               </div>
@@ -100,7 +100,7 @@ export default function LandingPage() {
                   <h2 className="mt-4 font-display text-3xl font-bold">GIKI travel made organized.</h2>
                   <p className="mt-3 text-sm leading-7 text-white/80">Book seats with confidence, keep pricing transparent, and travel in smaller vans with a clear digital ticketing flow.</p>
                 </div>
-                <div className="grid grid-cols-2 gap-3 p-6 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2 sm:p-6 lg:grid-cols-3">
                   <div className="rounded-clay bg-clay-bg p-4"><Bus className="text-clay-primary" /><p className="mt-2 text-sm font-semibold">9-10 / Hiace</p></div>
                   <div className="rounded-clay bg-clay-bg p-4"><Ticket className="text-clay-primary" /><p className="mt-2 text-sm font-semibold">Online Ticketing</p></div>
                   <div className="rounded-clay bg-clay-bg p-4"><ShieldCheck className="text-clay-primary" /><p className="mt-2 text-sm font-semibold">Transparent Pricing</p></div>
@@ -113,13 +113,13 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="about" className="px-6 py-4">
+        <section id="about" className="px-4 py-4 sm:px-6">
           <div className="mx-auto max-w-7xl rounded-clay-lg bg-clay-primary px-6 py-4 text-sm text-white shadow-clay-lg">
             Student-led platform for GIKI riders. No WhatsApp dependency. Clear confirmation flow.
           </div>
         </section>
 
-        <section className="px-6 py-16">
+        <section className="px-4 py-14 sm:px-6 sm:py-16">
           <div className="mx-auto max-w-7xl rounded-clay-lg border border-clay-border bg-gradient-to-r from-clay-primary to-clay-primary-light p-6 text-white shadow-clay-lg md:p-8">
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               <div className="max-w-3xl space-y-3">
@@ -131,7 +131,7 @@ export default function LandingPage() {
                 {['9-10 / Students per Hiace', 'Fixed / Route Pricing', 'Online / Ticketing System'].map((item) => <div key={item} className="rounded-clay bg-white/10 px-4 py-3 backdrop-blur">{item}</div>)}
               </div>
             </div>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link to="/bookings" className="rounded-full bg-clay-accent px-5 py-3 font-semibold text-clay-primary">Book a Seat Now</Link>
               <Link to="/how-to-book" className="rounded-full border border-white/20 px-5 py-3 font-semibold text-white">See How It Works</Link>
             </div>
@@ -143,12 +143,12 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="px-6 py-12">
+        <section className="px-4 py-12 sm:px-6">
           <div className="mx-auto max-w-7xl space-y-8">
             <div className="space-y-3">
               <p className="text-sm font-semibold uppercase tracking-[0.3em] text-clay-accent">The Problem</p>
-              <h2 className="font-display text-4xl font-black text-clay-primary md:text-6xl">Student Transport<br />Wasn't Working</h2>
-              <p className="max-w-3xl text-lg leading-8 text-clay-text-muted">Overcrowded vans. Unclear pricing. No receipts. No accountability. GIKIans deserved better — so we built it ourselves.</p>
+              <h2 className="font-display text-3xl font-black text-clay-primary sm:text-4xl md:text-6xl">Student Transport<br />Wasn't Working</h2>
+              <p className="max-w-3xl text-base leading-7 text-clay-text-muted sm:text-lg sm:leading-8">Overcrowded vans. Unclear pricing. No receipts. No accountability. GIKIans deserved better — so we built it ourselves.</p>
             </div>
             <div className="grid gap-5 md:grid-cols-3">
               {problemCards.map(([icon, title, body]) => (
@@ -162,12 +162,12 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="px-6 py-12">
+        <section className="px-4 py-12 sm:px-6">
           <div className="mx-auto max-w-7xl space-y-8">
             <div className="space-y-3">
               <p className="text-sm font-semibold uppercase tracking-[0.3em] text-clay-accent">Our Solution</p>
-              <h2 className="font-display text-4xl font-black text-clay-primary md:text-6xl">We Built What<br />Students Needed</h2>
-              <p className="max-w-3xl text-lg leading-8 text-clay-text-muted">A fully digital, student-led platform. Book online, select your seat, upload payment, and receive a confirmed digital ticket — all through taleemxpress.app. Transparency, fairness, and comfort. That's our promise.</p>
+              <h2 className="font-display text-3xl font-black text-clay-primary sm:text-4xl md:text-6xl">We Built What<br />Students Needed</h2>
+              <p className="max-w-3xl text-base leading-7 text-clay-text-muted sm:text-lg sm:leading-8">A fully digital, student-led platform. Book online, select your seat, upload payment, and receive a confirmed digital ticket — all through taleemxpress.app. Transparency, fairness, and comfort. That's our promise.</p>
             </div>
             <div className="flex flex-wrap gap-3 text-sm font-semibold text-clay-primary">
               <span className="rounded-full bg-clay-surface px-4 py-2 shadow-clay">Built by GIKIans</span>
@@ -186,10 +186,10 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="pricing" className="px-6 py-12">
+        <section id="pricing" className="px-4 py-12 sm:px-6">
           <div className="mx-auto max-w-7xl space-y-8">
             <div className="space-y-3 text-center">
-              <h2 className="font-display text-4xl font-black text-clay-primary md:text-6xl">Pricing</h2>
+              <h2 className="font-display text-3xl font-black text-clay-primary sm:text-4xl md:text-6xl">Pricing</h2>
               <p className="text-xl text-clay-text-muted">Fixed &amp; Transparent Pricing</p>
               <p className="mx-auto max-w-3xl text-base text-clay-text-muted">Final route fares — no hidden charges, no variable pricing. Book your seat online.</p>
             </div>
@@ -210,10 +210,10 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="services" className="px-6 py-12">
+        <section id="services" className="px-4 py-12 sm:px-6">
           <div className="mx-auto max-w-7xl space-y-8">
             <div className="space-y-3 text-center">
-              <h2 className="font-display text-4xl font-black text-clay-primary md:text-6xl">Our Services</h2>
+              <h2 className="font-display text-3xl font-black text-clay-primary sm:text-4xl md:text-6xl">Our Services</h2>
               <p className="text-xl text-clay-text-muted">Travel Options</p>
               <p className="mx-auto max-w-3xl text-base text-clay-text-muted">Choose your route and book online. Organized travel built for GIKI students.</p>
             </div>
@@ -237,10 +237,10 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="px-6 py-12">
+        <section className="px-4 py-12 sm:px-6">
           <div className="mx-auto max-w-7xl space-y-8">
             <div className="space-y-3 text-center">
-              <h2 className="font-display text-4xl font-black text-clay-primary md:text-6xl">Why Choose Us</h2>
+              <h2 className="font-display text-3xl font-black text-clay-primary sm:text-4xl md:text-6xl">Why Choose Us</h2>
               <p className="text-xl text-clay-text-muted">Features You'll Love</p>
               <p className="mx-auto max-w-3xl text-base text-clay-text-muted">Everything you need for a comfortable, hassle-free journey.</p>
             </div>
@@ -256,7 +256,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="px-6 py-12">
+        <section className="px-4 py-12 sm:px-6">
           <div className="mx-auto max-w-7xl rounded-clay-lg border border-clay-border bg-clay-surface p-6 shadow-clay-lg md:p-8">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-3xl space-y-3">
@@ -277,7 +277,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="px-6 py-12">
+        <section className="px-4 py-12 sm:px-6">
           <div className="mx-auto max-w-7xl space-y-4 text-center">
             <h2 className="font-display text-4xl font-black text-clay-primary md:text-6xl">Testimonials</h2>
             <p className="text-xl text-clay-text-muted">What Students Say</p>
@@ -286,7 +286,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="faq" className="px-6 py-12">
+        <section id="faq" className="px-4 py-12 sm:px-6">
           <div className="mx-auto max-w-7xl space-y-8">
             <div className="space-y-3 text-center">
               <h2 className="font-display text-4xl font-black text-clay-primary md:text-6xl">FAQ</h2>

@@ -87,14 +87,14 @@ export default function WalletPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-clay-text">Wallet</h1>
+        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">Wallet</h1>
         <p className="text-clay-muted text-sm">View your balance, transaction history, and top up</p>
       </div>
 
       {/* Balance Card + Top Up Button */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
-        className="clay-card bg-gradient-to-br from-clay-primary to-clay-secondary text-white p-8">
-        <div className="flex items-center justify-between">
+        className="clay-card bg-gradient-to-br from-clay-primary to-clay-secondary p-5 text-white sm:p-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
               <Wallet size={24} />
@@ -103,7 +103,7 @@ export default function WalletPage() {
             <p className="text-4xl font-bold">PKR {balance}</p>
             <p className="text-white/60 text-xs mt-2">Available for bookings</p>
           </div>
-          <button onClick={() => setShowTopup(!showTopup)} className="bg-white/20 hover:bg-white/30 text-white px-5 py-3 rounded-clay font-semibold transition-all flex items-center gap-2">
+          <button onClick={() => setShowTopup(!showTopup)} className="bg-white/20 hover:bg-white/30 text-white px-5 py-3 rounded-clay font-semibold transition-all flex items-center justify-center gap-2">
             <Upload size={18} /> Top Up
           </button>
         </div>
@@ -142,7 +142,7 @@ export default function WalletPage() {
             </div>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row">
             <button onClick={() => { setShowTopup(false); setTopupAmount(''); setTopupFile(null); }} className="clay-btn-outline flex-1">Cancel</button>
             <button onClick={handleTopup} disabled={!topupAmount || !topupFile || topupLoading} className="clay-btn-primary flex-1 disabled:opacity-50 flex items-center justify-center gap-2">
               {topupLoading ? <><Loader size={16} className="animate-spin" /> Submitting...</> : 'Submit Request'}
@@ -157,7 +157,7 @@ export default function WalletPage() {
           <h2 className="font-bold text-clay-text mb-4">Top-up Requests</h2>
           <div className="space-y-3">
             {topupRequests.map((r) => (
-              <div key={r.id} className="flex items-center justify-between p-3 rounded-clay bg-clay-bg/50">
+              <div key={r.id} className="flex flex-col gap-3 p-3 rounded-clay bg-clay-bg/50 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm font-semibold text-clay-text">PKR {r.amount}</p>
                   <p className="text-xs text-clay-muted">{new Date(r.createdAt).toLocaleString()}</p>
@@ -179,7 +179,7 @@ export default function WalletPage() {
           <div className="space-y-3">
             {transactions.map((tx, i) => (
               <motion.div key={tx.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.03 }}
-                className="flex items-center justify-between p-3 rounded-clay bg-clay-bg/50">
+                className="flex flex-col gap-3 p-3 rounded-clay bg-clay-bg/50 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-white shadow-clay flex items-center justify-center">
                     {txIcon(tx.type)}

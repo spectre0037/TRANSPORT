@@ -75,9 +75,9 @@ export default function PrivateBooking() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="mx-auto max-w-2xl space-y-6 px-0 sm:px-0">
       <div>
-        <h1 className="text-2xl font-bold text-clay-text">Private Booking</h1>
+        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">Private Booking</h1>
         <p className="text-clay-muted text-sm">Request a custom vehicle for your trip</p>
       </div>
 
@@ -105,7 +105,7 @@ export default function PrivateBooking() {
         {/* Vehicle Type */}
         <div>
           <label className="text-sm font-semibold text-clay-text mb-1 block">Vehicle Type *</label>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {VEHICLE_OPTIONS.map((v) => (
               <button key={v.value} type="button" onClick={() => update('vehicleType', v.value)}
                 className={`p-4 rounded-clay-lg border-2 text-left transition-all ${
@@ -121,7 +121,7 @@ export default function PrivateBooking() {
         </div>
 
         {/* Departure & Arrival */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className="text-sm font-semibold text-clay-text mb-1 block">Departure Location *</label>
             <div className="relative">
@@ -141,7 +141,7 @@ export default function PrivateBooking() {
         </div>
 
         {/* Date & Time */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className="text-sm font-semibold text-clay-text mb-1 block">Date *</label>
             <div className="relative">
@@ -163,7 +163,7 @@ export default function PrivateBooking() {
         {/* Trip Type */}
         <div>
           <label className="text-sm font-semibold text-clay-text mb-1 block">Trip Type *</label>
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row">
             <button type="button" onClick={() => { update('tripType', 'one-way'); update('duration', ''); }}
               className={`flex-1 py-3 rounded-clay font-bold text-sm transition-all ${
                 form.tripType === 'one-way'

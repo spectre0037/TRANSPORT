@@ -46,6 +46,11 @@
   body {
     background-color: var(--clay-bg);
     color: var(--clay-text);
+    overflow-x: hidden;
+  }
+
+  html, body, #root {
+    width: 100%;
   }
 }
 

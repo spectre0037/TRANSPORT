@@ -31,12 +31,12 @@ export default function MapsPage() {
   const mapCards = useMemo(() => routes, []);
 
   return (
-    <main className="min-h-screen bg-clay-bg px-6 py-16 text-clay-text">
+    <main className="min-h-screen bg-clay-bg px-4 py-14 text-clay-text sm:px-6 sm:py-16">
       <div className="mx-auto max-w-7xl space-y-10">
         <section className="text-center">
           <span className="clay-badge bg-clay-accent text-clay-primary">Route Maps</span>
-          <h1 className="mt-4 font-display text-4xl font-extrabold text-clay-primary md:text-6xl">See Every Route Clearly</h1>
-          <p className="mx-auto mt-4 max-w-3xl text-lg text-clay-text-muted">These maps show the exact route plan for each major destination. Click any map to open the selected route directly in Google Maps.</p>
+          <h1 className="mt-4 font-display text-3xl font-extrabold text-clay-primary sm:text-4xl md:text-6xl">See Every Route Clearly</h1>
+          <p className="mx-auto mt-4 max-w-3xl text-base text-clay-text-muted sm:text-lg">These maps show the exact route plan for each major destination. Click any map to open the selected route directly in Google Maps.</p>
         </section>
 
         <div className="grid gap-6 lg:grid-cols-2">

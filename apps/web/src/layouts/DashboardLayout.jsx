@@ -32,16 +32,16 @@ export default function DashboardLayout({ children }) {
   };
 
   return (
-    <div className="min-h-screen bg-clay-bg">
+    <div className="min-h-screen bg-clay-bg overflow-x-hidden">
       {/* Sidebar */}
       <aside className={`clay-sidebar transition-transform duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
-        <div className="p-6 border-b border-clay-border">
+        <div className="p-5 border-b border-clay-border sm:p-6">
           <div className="flex items-center gap-3">
-            <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-clay-border bg-white shadow-clay">
+            <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-clay-border bg-white shadow-clay sm:h-12 sm:w-12">
               <img src={logoImage} alt="TaleemXpress logo" className="h-full w-full object-cover" />
             </span>
             <div>
-              <h1 className="text-xl font-bold text-clay-primary">TaleemXpress</h1>
+              <h1 className="text-lg font-bold text-clay-primary sm:text-xl">TaleemXpress</h1>
               <p className="text-xs text-clay-muted mt-1">Student Portal</p>
             </div>
           </div>
@@ -79,7 +79,7 @@ export default function DashboardLayout({ children }) {
       {/* Main Content */}
       <div className="md:ml-64">
         {/* Top Bar */}
-        <header className="bg-white/80 backdrop-blur-sm border-b border-clay-border px-6 py-4 flex items-center justify-between sticky top-0 z-20">
+        <header className="bg-white/80 backdrop-blur-sm border-b border-clay-border px-4 py-4 flex items-center justify-between sticky top-0 z-20 sm:px-6">
           <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden text-clay-text">
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -104,7 +104,7 @@ export default function DashboardLayout({ children }) {
         </header>
 
         {/* Page Content */}
-        <main className="p-6">
+        <main className="p-4 sm:p-6">
           {children || <Outlet />}
         </main>
       </div>

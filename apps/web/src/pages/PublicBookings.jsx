@@ -5,16 +5,16 @@ export default function PublicBookings() {
   const [imageError, setImageError] = useState(false);
 
   return (
-    <main className="min-h-screen bg-clay-bg px-6 py-16 text-clay-text">
+    <main className="min-h-screen bg-clay-bg px-4 py-14 text-clay-text sm:px-6 sm:py-16">
       <div className="mx-auto max-w-5xl space-y-8">
         <section className="overflow-hidden rounded-clay-lg border border-clay-border bg-clay-surface p-6 shadow-clay-lg md:p-10">
           <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
             <div className="space-y-5">
               <span className="clay-badge bg-clay-accent text-clay-primary">Fixed Pricing · Transparent Booking</span>
-              <h1 className="font-display text-4xl font-extrabold leading-tight text-clay-primary md:text-6xl">TaleemXpress — Book Your Seat</h1>
+              <h1 className="font-display text-3xl font-extrabold leading-tight text-clay-primary sm:text-4xl md:text-6xl">TaleemXpress — Book Your Seat</h1>
               <p className="text-lg text-clay-text-muted">Organized Student Transport for GIKI.</p>
               <p className="max-w-2xl text-sm leading-7 text-clay-text-muted">Sign in or create a free account to browse available departures, select your seat, and book your ride in minutes.</p>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link to="/login" className="clay-btn-primary">Sign In to Book</Link>
                 <Link to="/register" className="clay-btn-outline">Create Free Account</Link>
               </div>
@@ -22,9 +22,9 @@ export default function PublicBookings() {
 
             <div className="rounded-clay-lg bg-gradient-to-br from-clay-primary to-clay-primary-light p-6 text-white shadow-clay-lg">
               {!imageError ? (
-                <img src="/hiace.png" alt="TaleemXpress Hiace" className="h-56 w-full rounded-clay-lg object-cover" onError={() => setImageError(true)} />
+                <img src="/hiace.png" alt="TaleemXpress Hiace" className="h-52 w-full rounded-clay-lg object-cover sm:h-56" onError={() => setImageError(true)} />
               ) : (
-                <div className="flex h-56 items-center justify-center rounded-clay-lg border border-white/10 bg-white/5 text-2xl font-display font-bold text-white/90">TaleemXpress</div>
+                <div className="flex h-52 items-center justify-center rounded-clay-lg border border-white/10 bg-white/5 text-2xl font-display font-bold text-white/90 sm:h-56">TaleemXpress</div>
               )}
             </div>
           </div>

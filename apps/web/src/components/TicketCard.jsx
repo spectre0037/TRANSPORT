@@ -186,7 +186,7 @@ export default function TicketCard({ booking, passengerName, onClose }) {
   };
 
   return (
-    <div className="clay-card relative overflow-hidden max-w-sm mx-auto">
+    <div className="clay-card relative mx-auto max-w-[92vw] overflow-hidden sm:max-w-sm">
       {/* Branded top */}
       <div className="bg-gradient-to-r from-clay-primary to-clay-secondary text-white text-center py-6 px-4 -mx-6 -mt-6 mb-4">
         <h2 className="text-xl font-bold tracking-wider">🎓 TaleemXpress</h2>

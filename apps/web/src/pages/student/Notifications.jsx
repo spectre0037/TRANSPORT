@@ -25,7 +25,7 @@ export default function StudentNotifications() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-clay-text">Notifications</h1>
+        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">Notifications</h1>
         <p className="text-clay-muted text-sm">Announcements from admin</p>
       </div>
 
@@ -42,7 +42,7 @@ export default function StudentNotifications() {
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
               className="clay-card">
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3 sm:gap-4">
                 <div className="w-10 h-10 bg-clay-primary/10 rounded-clay flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Bell className="text-clay-primary" size={18} />
                 </div>

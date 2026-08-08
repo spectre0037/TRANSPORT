@@ -12,7 +12,7 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-clay-border bg-clay-surface text-clay-text">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-4">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-4 md:col-span-1">
           <div>
             <h3 className="font-display text-2xl font-extrabold text-clay-primary">TaleemXpress</h3>
@@ -55,7 +55,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-clay-border px-6 py-5 text-center text-sm text-clay-text-muted">
+      <div className="border-t border-clay-border px-4 py-5 text-center text-sm text-clay-text-muted sm:px-6">
         © {currentYear} TaleemXpress. All rights reserved. Student-led Transport.
       </div>
     </footer>

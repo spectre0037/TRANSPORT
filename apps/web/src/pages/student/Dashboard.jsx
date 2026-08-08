@@ -44,12 +44,12 @@ export default function StudentDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-clay-text">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">Dashboard</h1>
         <p className="text-clay-muted text-sm">Welcome back! Here's your overview.</p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
           { icon: Bus, label: 'Available Routes', value: stats.departures, color: 'text-clay-primary' },
           { icon: Ticket, label: 'My Bookings', value: stats.bookings, color: 'text-clay-accent' },
@@ -70,7 +70,7 @@ export default function StudentDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Link to="/departures" className="clay-card hover:shadow-clay-lg transition-all flex items-center justify-between group">
           <div className="flex items-center gap-3">
             <Bus className="text-clay-primary" size={20} />
@@ -89,7 +89,7 @@ export default function StudentDashboard() {
 
       {/* Recent Bookings */}
       <div className="clay-card">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-start justify-between gap-3 mb-4 sm:items-center">
           <h2 className="font-bold text-clay-text">Recent Bookings</h2>
           <Link to="/bookings" className="text-sm text-clay-primary hover:underline">View All</Link>
         </div>
@@ -98,7 +98,7 @@ export default function StudentDashboard() {
         ) : (
           <div className="space-y-3">
             {recentBookings.map((b) => (
-              <div key={b.id} className="flex items-center justify-between p-3 rounded-clay bg-clay-bg/50">
+              <div key={b.id} className="flex flex-col gap-3 rounded-clay bg-clay-bg/50 p-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
                   <Bus className="text-clay-primary" size={18} />
                   <div>
@@ -109,7 +109,7 @@ export default function StudentDashboard() {
                     </p>
                   </div>
                 </div>
-                <span className={`clay-badge ${statusColor(b.status)}`}>{b.status?.replace('_', ' ')}</span>
+                <span className={`clay-badge self-start ${statusColor(b.status)}`}>{b.status?.replace('_', ' ')}</span>
               </div>
             ))}
           </div>

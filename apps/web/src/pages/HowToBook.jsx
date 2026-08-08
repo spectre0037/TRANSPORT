@@ -78,13 +78,13 @@ export default function HowToBook() {
   const [imageError, setImageError] = useState(false);
 
   return (
-    <main className="min-h-screen bg-clay-bg px-6 py-16 text-clay-text">
+    <main className="min-h-screen bg-clay-bg px-4 py-14 text-clay-text sm:px-6 sm:py-16">
       <div className="mx-auto max-w-6xl space-y-10">
-        <section className="grid gap-8 rounded-clay-lg border border-clay-border bg-clay-surface p-6 shadow-clay-lg md:grid-cols-[0.95fr_1.05fr] md:p-10">
+        <section className="grid gap-8 rounded-clay-lg border border-clay-border bg-clay-surface p-5 shadow-clay-lg md:grid-cols-[0.95fr_1.05fr] md:p-10">
           <div className="space-y-4">
             <span className="clay-badge bg-clay-accent text-clay-primary">Complete Booking Guide</span>
-            <h1 className="font-display text-4xl font-extrabold leading-tight text-clay-primary md:text-6xl">How to Book Your Seat</h1>
-            <p className="text-lg text-clay-text-muted">Everything you need to know about booking your TaleemXpress seat online. From signup to confirmed ticket in minutes.</p>
+            <h1 className="font-display text-3xl font-extrabold leading-tight text-clay-primary sm:text-4xl md:text-6xl">How to Book Your Seat</h1>
+            <p className="text-base text-clay-text-muted sm:text-lg">Everything you need to know about booking your TaleemXpress seat online. From signup to confirmed ticket in minutes.</p>
           </div>
           <div className="overflow-hidden rounded-clay-lg border border-clay-border bg-clay-surface shadow-clay-lg">
             {!imageError ? (
