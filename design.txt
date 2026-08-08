@@ -1,0 +1,822 @@
+# TaleemXpress — UI Update Instructions for Claude Code
+
+## ⚠️ CRITICAL RULES — READ BEFORE TOUCHING ANYTHING
+
+1. **DO NOT change any backend logic, API routes, controllers, services, or database schema.**
+2. **DO NOT modify any auth flow, booking logic, wallet logic, OTP logic, or email sending.**
+3. **DO NOT change any file inside `apps/server/` except if explicitly told below.**
+4. **DO NOT change React Router routes, Zustand stores, Axios config, or any `lib/` files.**
+5. **DO NOT rename any component files or move files between folders.**
+6. **These changes are STRICTLY UI/content/styling only.**
+7. **After every change, the app must still function exactly as before — only the appearance changes.**
+
+---
+
+## SCOPE OF CHANGES
+
+### What you ARE changing:
+- Global color scheme (all files)
+- Content/copy on public-facing pages: `Landing.jsx`, `Bookings.jsx`, `Maps.jsx` (if exists)
+- Add a new `HowToBook.jsx` page (UI only, static content, no backend calls except navigation)
+- Add route for How To Book in `App.jsx` (UI route only — no auth, no logic)
+- Update `Navbar.jsx` to add the How To Book link (public, no auth required)
+- Update `Footer.jsx` content
+- All copy changes described below
+
+### What you are NOT changing:
+- Any logic inside student pages (Dashboard, Departures, BookDeparture, MyBookings, Wallet, BookingDetail)
+- Any admin pages
+- Any auth pages (Login, Register, VerifyEmail, ForgotPassword flow)
+- Any hooks, stores, services, middleware, controllers, routes, schema
+- Any `.env` files
+
+---
+
+## STEP 1 — GLOBAL COLOR SCHEME CHANGE
+
+Replace the entire claymorphism token system with the TaleemXpress brand colors.
+Update `apps/web/src/index.css` — replace ALL `:root` and `.dark` CSS variable blocks with this:
+
+```css
+:root {
+  --clay-bg: #f0f0f0;
+  --clay-surface: #ffffff;
+  --clay-surface-2: #e5e5e5;
+  --clay-primary: #14213d;
+  --clay-primary-light: #1d2d50;
+  --clay-accent: #fca311;
+  --clay-accent-dark: #d48a0e;
+  --clay-success: #4ade80;
+  --clay-warning: #fca311;
+  --clay-danger: #ef4444;
+  --clay-text: #000000;
+  --clay-text-muted: #666666;
+  --clay-border: #e5e5e5;
+  --clay-male: #14213d;
+  --clay-female: #fca311;
+}
+
+.dark {
+  --clay-bg: #0a0f1e;
+  --clay-surface: #14213d;
+  --clay-surface-2: #1d2d50;
+  --clay-primary: #fca311;
+  --clay-primary-light: #d48a0e;
+  --clay-accent: #fca311;
+  --clay-accent-dark: #d48a0e;
+  --clay-success: #4ade80;
+  --clay-warning: #fca311;
+  --clay-danger: #f87171;
+  --clay-text: #ffffff;
+  --clay-text-muted: #a0aec0;
+  --clay-border: #1d2d50;
+  --clay-male: #3b82f6;
+  --clay-female: #fca311;
+}
+```
+
+Also update `apps/web/tailwind.config.js` — add these to the `extend.colors` section (keep all existing clay-* keys, just the values will come from CSS vars so no change needed there — the CSS vars above handle it):
+
+- Keep the `tailwind.config.js` fontFamily change: add `'Poppins'` as the first entry in display and sans:
+```js
+fontFamily: {
+  display: ['Poppins', 'Nunito', 'sans-serif'],
+  sans: ['Poppins', 'Inter', 'sans-serif'],
+  mono: ['JetBrains Mono', 'monospace'],
+},
+```
+
+Update `apps/web/index.html` — add Poppins to the Google Fonts import:
+```html
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito:wght@600;700;800;900&family=Inter:wght@400;500;600&family=JetBrains Mono:wght@400;500&display=swap" rel="stylesheet" />
+```
+
+Also update `index.html` meta tags:
+```html
+<title>TaleemXpress - Premium Student Transport for GIKI</title>
+<meta name="description" content="Student-led and organized transport service for GIKI students. Maximum 9-10 students per Hiace, Route Pricing, and transparent policies." />
+<meta name="keywords" content="GIKI transport, GIKI to Islamabad, GIKI to Rawalpindi, Student transport GIKI, TaleemXpress" />
+<meta name="author" content="TaleemXpress" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="TaleemXpress - Premium Student Transport for GIKI" />
+<meta property="og:description" content="Same price. Half the crowd. Newer vans. Zero hidden charges." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="TaleemXpress - Premium Student Transport" />
+<meta name="twitter:description" content="Student-led premium transport service for GIKI students." />
+```
+
+---
+
+## STEP 2 — UPDATE NAVBAR
+
+In `apps/web/src/components/layout/Navbar.jsx`:
+
+**Public nav links (visible to everyone, logged in or not):**
+- Home → `/` (scroll to #hero on home page)
+- About → scroll to #about (on home, navigate first if not on /)
+- Services → scroll to #services
+- Pricing → scroll to #pricing
+- Maps → navigate to `/maps`
+- FAQ → scroll to #faq
+- **How to Book** → navigate to `/how-to-book` ← ADD THIS
+
+**Logged-out CTA button:** `Book a Seat` → `/bookings` (public page)
+**Logged-in student CTA:** Keep existing Dashboard/Bookings/Wallet links
+**Logged-in admin CTA:** Keep existing admin links
+
+**Brand/logo:**
+- Logo text: `TaleemXpress`
+- Logo font: font-display (Poppins), font-weight 800
+- Logo color: `var(--clay-accent)` (golden #fca311) on dark background, `var(--clay-primary)` on light
+
+**Navbar scroll behavior:**
+- When `window.scrollY > 20`: add dark background `var(--clay-primary)` with `text-white`
+- When at top: transparent or light
+
+**Do NOT change:** any auth checks, Zustand auth store usage, or navigation logic for student/admin routing.
+
+---
+
+## STEP 3 — REWRITE LANDING PAGE
+
+Rewrite the content of `apps/web/src/pages/Landing.jsx` and all its child landing components.
+**Do NOT change the component file names or import structure.**
+**Only change the JSX content, copy, and styling classes.**
+
+The landing page is a PUBLIC page — no auth required, no API calls, no backend.
+
+### Section order on Landing page:
+1. Navbar (already exists)
+2. Hero (#hero)
+3. CTA strip
+4. Problem
+5. Solution
+6. Pricing
+7. Services
+8. Features
+9. How It Works (brief preview with link to /how-to-book)
+10. Testimonials
+11. FAQ (#faq)
+12. Footer
+
+---
+
+### 3.1 — Hero Section
+
+**ID:** `hero`
+
+**Badge:** `Student-led & Organized Transport`
+
+**Headline (3 lines):**
+```
+TaleemXpress
+Built for GIKI
+Students
+```
+Headline font: `font-display` (Poppins), weight 900, very large. Color: `var(--clay-primary)` light mode / `white` dark mode. The word "GIKI" or a line should use `var(--clay-accent)` (#fca311) as an underline or color highlight.
+
+**Subheadline/description:**
+```
+Comfortable, safe, and reliable travel between GIKI and nearby cities.
+Book online, pick your seat, pay securely — and get your ticket once confirmed.
+Maximum 9-10 students per Hiace. Fixed transparent pricing. No hidden charges.
+Routes: ISB/RWP, Taxila/Wah/Hasan Abdal, Peshawar/Mardan, Abbottabad/Mansehra.
+```
+
+**CTA Buttons:**
+- Primary: `Book a Seat` → `/bookings` (internal navigate, NOT new tab)
+- Secondary: `How to Book` → `/how-to-book` (internal navigate)
+
+**Hero Stats row (3 stats):**
+- `9-10` / Students per Hiace
+- `Online` / Secure Booking
+- `Fixed` / Transparent Pricing
+
+**Info card (floating or inline):**
+```
+Book online at taleemxpress.app
+Select seat → Pay → Get ticket once confirmed
+ISB: Rs 900 | RWP (26 No.): Rs 850
+```
+
+**Image:** Try loading `/hiace.png` from public folder. If it fails, show styled fallback div with text: `TaleemXpress Fleet`.
+
+---
+
+### 3.2 — CTA Strip Section
+
+**Badge:** `Transparent Route Pricing`
+
+**Headline:** `GIKI ↔ Key City Routes`
+
+**Description:**
+```
+Book your seat online in minutes. Select your seat, upload your payment screenshot,
+and receive your confirmed ticket once the admin approves. No WhatsApp required.
+```
+
+**Stats triplet:**
+- `9-10` / Students per Hiace
+- `Fixed` / Route Pricing
+- `Online` / Ticketing System
+
+**Buttons:**
+- `Book a Seat Now` → `/bookings`
+- `See How It Works` → `/how-to-book`
+
+**Trust badges:**
+- ✓ Student-Led
+- ✓ Fixed Route Pricing
+- ✓ Ticket Issued After Confirmation
+
+---
+
+### 3.3 — Problem Section
+
+**Label:** `The Problem`
+
+**Headline:**
+```
+Student Transport
+Wasn't Working
+```
+
+**Body:**
+```
+Overcrowded vans. Unclear pricing. No receipts. No accountability.
+GIKIans deserved better — so we built it ourselves.
+```
+
+**Problem cards (3 cards):**
+- 🚐 Overcrowded Vans: 17+ students crammed into HiAces meant for fewer passengers.
+- 💸 Unclear Pricing: Variable fares with no transparency or fixed route pricing.
+- 📋 No System: WhatsApp chaos, no ticketing, no confirmation, no accountability.
+
+---
+
+### 3.4 — Solution Section
+
+**Label:** `Our Solution`
+
+**Headline:**
+```
+We Built What
+Students Needed
+```
+
+**Body:**
+```
+A fully digital, student-led platform. Book online, select your seat, upload payment,
+and receive a confirmed digital ticket — all through taleemxpress.app.
+Transparency, fairness, and comfort. That's our promise.
+```
+
+**Trust chips:**
+- Built by GIKIans
+- 100% Transparent
+- Book Online 24/7
+
+**Solution cards (4 cards):**
+- 🎯 Limited Seats: Maximum 9-10 students per Hiace — guaranteed comfort every trip.
+- 💼 Clear Luggage Policy: 1 medium bag + 1 small backpack. Extra luggage charged fairly.
+- 🚐 Modern Vans: 2018+ model HiAce vehicles, well-maintained and clean.
+- 💻 Online Platform: Book, pay, and track your seat entirely online at taleemxpress.app.
+
+---
+
+### 3.5 — Pricing Section
+
+**ID:** `pricing`
+
+**Heading:** `Pricing`
+**Subheading:** `Fixed & Transparent Pricing`
+
+**Description:**
+```
+Final route fares — no hidden charges, no variable pricing. Book your seat online.
+```
+
+**Pricing cards (4 cards):**
+
+1. **Islamabad / Rawalpindi ↔ GIKI**
+   - Islamabad: Rs 900 per seat
+   - Rawalpindi (26 No.): Rs 850 per seat
+   - Button: `Book This Route` → `/bookings`
+
+2. **Taxila / Wah Cantt / Hasan Abdal ↔ GIKI**
+   - Rs 900 per seat
+   - Button: `Book This Route` → `/bookings`
+
+3. **Peshawar / Mardan ↔ GIKI**
+   - Peshawar: Rs 1100 per seat
+   - Mardan: Rs 1000 per seat
+   - Button: `Book This Route` → `/bookings`
+
+4. **Abbottabad / Mansehra ↔ GIKI**
+   - Abbottabad: Rs 1100 per seat
+   - Mansehra: Rs 1300 per seat
+   - Button: `Book This Route` → `/bookings`
+
+**Bottom notes:**
+```
+Fixed route pricing per seat  •  Online ticket issued after payment approval  •  Luggage: 1 medium bag + 1 small backpack
+```
+
+---
+
+### 3.6 — Services Section
+
+**ID:** `services`
+
+**Heading:** `Our Services`
+**Subheading:** `Travel Options`
+
+**Description:**
+```
+Choose your route and book online. Organized travel built for GIKI students.
+```
+
+**Service cards (3 cards):**
+
+1. **Islamabad / Rawalpindi Routes**
+   - Organized city routes with fixed pricing and clear boarding coordination.
+   - Price: `Rs 850 – Rs 900`
+   - Features:
+     - Rawalpindi (26 No.): Rs 850
+     - Islamabad: Rs 900
+     - Maximum 9-10 students per Hiace
+     - Online booking with seat selection
+   - Button: `Book Now` → `/bookings`
+
+2. **Custom Travel Plan**
+   - Plan your full semester schedule with dependable, recurring trips.
+   - Price: `Custom`
+   - Features:
+     - Comfortable recurring ride
+     - Organized pickup & dropoff
+     - Digital ticket issued after confirmation
+   - Button: `Book Now` → `/bookings`
+
+3. **Full Hiace Booking**
+   - Book the entire van for your group or special occasions.
+   - Price: `Custom`
+   - Features:
+     - Private group booking
+     - Ideal for friend groups or events
+     - Luggage policy applies per student
+   - Button: `Book Now` → `/bookings`
+
+---
+
+### 3.7 — Features Section
+
+**Heading:** `Why Choose Us`
+**Subheading:** `Features You'll Love`
+
+**Description:**
+```
+Everything you need for a comfortable, hassle-free journey.
+```
+
+**Feature cards (4 cards):**
+- 📅 Online Seat Booking: Browse available departures, select your seat and gender preference, all from your phone or laptop.
+- 💳 Secure Payment: Upload your payment screenshot through the platform. Admin verifies and confirms your booking digitally.
+- 🎫 Digital Tickets: Once your payment is approved, your seat is confirmed. Download your ticket once the departure is finalized.
+- 🔍 Real-time Status: Track your booking status live — Pending, Confirmed, or Cancelled — no more WhatsApp chasing.
+
+---
+
+### 3.8 — How It Works Preview Section
+
+This is a SHORT preview section with a CTA to the full `/how-to-book` page.
+
+**Heading:** `How to Book`
+**Subheading:** `Simple. Fast. Online.`
+
+**Description:**
+```
+Booking your seat on TaleemXpress takes less than 5 minutes.
+From signup to confirmed ticket — here's the quick version.
+```
+
+**Steps (show 4 mini steps inline — no diagram, just numbered steps):**
+1. **Sign Up / Log In** — Create your free account at taleemxpress.app
+2. **Browse & Book** — Find your route, select your seat and gender
+3. **Upload Payment** — Pay and upload your payment screenshot
+4. **Get Confirmed** — Admin verifies your payment and confirms your ticket
+
+**CTA Button:**
+- `See Complete Booking Guide` → `/how-to-book`
+
+---
+
+### 3.9 — Testimonials Section
+
+**Heading:** `Testimonials`
+**Subheading:** `What Students Say`
+
+**Subtext:**
+```
+Don't just take our word for it — hear from fellow GIKIans.
+```
+
+**Note (no testimonial cards yet):**
+```
+Reviews coming soon! Be one of the first to share your experience.
+```
+
+---
+
+### 3.10 — FAQ Section
+
+**ID:** `faq`
+
+**Heading:** `FAQ`
+**Subheading:** `Frequently Asked Questions`
+
+**Subtext:**
+```
+Got questions? We've got answers.
+```
+
+**FAQ entries (exact Q&A — replace old WhatsApp-booking references with online booking):**
+
+1. **What is the luggage policy?**
+   Each student can carry 1 medium bag and 1 small backpack. Extra luggage is charged accordingly.
+
+2. **How many passengers per van?**
+   We strictly limit capacity to a maximum of 9-10 students per Hiace for comfort and safety.
+
+3. **How do I book a seat?**
+   Go to taleemxpress.app, sign up or log in, browse available departures, select your seat, choose your gender preference, upload your payment screenshot, and submit. Your seat will be confirmed once admin verifies your payment.
+
+4. **Are the vehicles new?**
+   Yes! We only use 2018 or newer model HiAces that are well-maintained, clean, and comfortable.
+
+5. **What routes do you cover?**
+   We cover Islamabad/Rawalpindi, Taxila/Wah Cantt/Hasan Abdal, Peshawar/Mardan, and Abbottabad/Mansehra routes to and from GIKI.
+
+6. **What are the fixed fares?**
+   Taxila/Wah Cantt/Hasan Abdal: Rs 900. Islamabad: Rs 900. Rawalpindi (26 No.): Rs 850. Peshawar: Rs 1100. Mardan: Rs 1000. Abbottabad: Rs 1100. Mansehra: Rs 1300.
+
+7. **How do I pay?**
+   After selecting your seat on the platform, you can pay via your TaleemXpress wallet or upload a screenshot of your bank/EasyPaisa/JazzCash transfer. Admin will verify and confirm your booking.
+
+8. **How does the ticketing system work?**
+   Once your payment is approved by admin on the platform, your booking status changes to "Confirmed." You can then download your digital ticket from your bookings page once the departure is finalized.
+
+9. **What if I need to cancel?**
+   You can request a cancellation through your bookings page on the platform. Refund requests must be submitted at least 12 hours before departure. A 30% service fee applies; 70% is returned to your wallet.
+
+10. **Do I need WhatsApp to book?**
+    No. The entire booking process — seat selection, payment, and confirmation — happens online at taleemxpress.app. You can optionally join our WhatsApp community for updates and announcements.
+
+**Closing CTA within FAQ:**
+- Heading: `Still have questions?`
+- Body: `Feel free to reach out to us directly.`
+- Link text: `Contact Support`
+- Link: `mailto:xpresstaleem@gmail.com`
+- Secondary link text: `Join WhatsApp Community`
+- Secondary link: `https://chat.whatsapp.com/Hu5vK2qABoa78lNY1KrniJ` (new tab)
+
+---
+
+## STEP 4 — UPDATE FOOTER
+
+In `apps/web/src/components/layout/Footer.jsx`, update content only:
+
+**Brand statement:**
+```
+Student-led transport service built by GIKIans for GIKIans.
+Online booking, organized ticketing, and reliable travel operations.
+```
+
+**Footer badges:**
+- Built by Students
+- Online Booking
+- Trusted Service
+
+**Quick Links:**
+- Home → `/` (#hero)
+- Services → `/#services`
+- Pricing → `/#pricing`
+- How to Book → `/how-to-book`  ← ADD
+- FAQ → `/#faq`
+- Maps → `/maps`
+
+**Our Routes (all → `/bookings`):**
+- Islamabad / Rawalpindi
+- Hasan Abdal / Taxila / Wah Cantt
+- Peshawar / Mardan
+- Abbottabad / Mansehra
+
+**Contact:**
+- Email: `xpresstaleem@gmail.com`
+- WhatsApp: `https://chat.whatsapp.com/Hu5vK2qABoa78lNY1KrniJ`
+
+**Copyright:**
+```
+© {currentYear} TaleemXpress. All rights reserved. Student-led Transport.
+```
+
+---
+
+## STEP 5 — UPDATE BOOKINGS PAGE
+
+Update content in `apps/web/src/pages/student/Departures.jsx` OR whatever the public-facing bookings browse page is.
+
+**IMPORTANT:** The bookings page in this platform is the authenticated student page at `/departures`. The public `/bookings` route (from the old site) may not exist yet. Here is what to do:
+
+### Option A — If `/bookings` is already a public route:
+Update its content as described below.
+
+### Option B — If `/bookings` does not exist as a public route:
+Create a simple public page `apps/web/src/pages/PublicBookings.jsx` that shows:
+
+```
+Title: Book Your Seat
+
+Content:
+- Logo: /hiace.png (with fallback text "TaleemXpress")
+- Heading: TaleemXpress — Book Your Seat
+- Subheading: Organized Student Transport for GIKI
+- Badge: Fixed Pricing · Transparent Booking
+
+Short description:
+  Sign in or create a free account to browse available departures,
+  select your seat, and book your ride in minutes.
+
+Two buttons:
+  - "Sign In to Book" → /login
+  - "Create Free Account" → /register
+
+Policy cards (2 cards):
+  1. Capacity & Luggage Policy:
+     Maximum 9-10 students per Hiace. Each student can carry 1 medium bag and 1 small backpack. Extra luggage charged accordingly.
+  2. Online Ticketing Policy:
+     After admin verifies your payment screenshot, your booking status updates to Confirmed. Download your ticket from your bookings page once the departure is finalized.
+
+WhatsApp community note (secondary):
+  "For announcements and updates, join our WhatsApp community."
+  Link: "Join Community" → https://chat.whatsapp.com/Hu5vK2qABoa78lNY1KrniJ (new tab)
+
+Footer line:
+  © 2026 TaleemXpress. Student-led Transport. | xpresstaleem@gmail.com
+```
+
+Add route in `App.jsx`: `<Route path="/bookings" element={<PublicBookings />} />` — public, no auth guard.
+
+---
+
+## STEP 6 — CREATE HOW TO BOOK PAGE
+
+Create new file: `apps/web/src/pages/HowToBook.jsx`
+
+This is a **STATIC, PUBLIC page** — no API calls, no auth, just content and visuals. Add it to `App.jsx` as a public route: `<Route path="/how-to-book" element={<HowToBook />} />`.
+
+### Page structure:
+
+**Page title (Helmet or document.title):** `TaleemXpress - How to Book`
+
+**Top section:**
+```
+Heading: How to Book Your Seat
+Subheading: Complete Booking Guide
+Description:
+  Everything you need to know about booking your TaleemXpress seat online.
+  From signup to confirmed ticket in minutes.
+```
+
+---
+
+### FLOW DIAGRAM SECTION
+
+Build a visual step-by-step flow diagram using CSS/JSX (no image, no external library needed). It should look like a vertical or horizontal chain of steps with connecting arrows/lines between them. Use the brand colors: `--clay-primary` (#14213d) for step cards, `--clay-accent` (#fca311) for step numbers and connectors.
+
+**Steps (8 steps total):**
+
+**STEP 1 — Create Your Account**
+- Icon: 👤
+- Title: Sign Up / Log In
+- Description: Go to taleemxpress.app and create a free account. Fill in your name, email, student reg number (optional), phone, and your home city. Already have an account? Just log in.
+- Detail box:
+  - ✉️ A 6-digit verification code will be sent to your email
+  - Enter the code to verify and activate your account
+  - One-time process — your account stays active
+
+**STEP 2 — Browse Departures**
+- Icon: 🗓️
+- Title: Find Your Route
+- Description: Once logged in, go to the Departures page. Browse all available departure dates, routes, and vehicle types. Filter by your city, date, or vehicle type (Bus or Hiace).
+- Detail box:
+  - See departure date, time, route, and price
+  - Check available seats in real-time
+  - Bus departures show a live seat map
+
+**STEP 3 — Select Your Seat**
+- Icon: 💺
+- Title: Choose Your Seat
+- Description: For Bus departures — click on an available seat on the interactive seat map. For Hiace departures — no seat selection needed, just proceed to payment.
+- Detail box:
+  - Bus: Interactive 45-seat grid (4 columns)
+  - 🔵 Blue seats = Male booked
+  - 🩷 Pink seats = Female booked
+  - ⬜ White seats = Available
+  - Click a seat → choose your gender (Male / Female)
+
+**STEP 4 — Choose Gender Preference**
+- Icon: ⚖️
+- Title: Select Gender
+- Description: After clicking your seat, a prompt will ask you to select your gender. This assigns the seat as Male (shown in blue) or Female (shown in pink) on the seat map for all users to see.
+- Detail box:
+  - Male selection → seat turns blue
+  - Female selection → seat turns pink
+  - Seat is gender-locked once booked (admin can override)
+
+**STEP 5 — Make Payment**
+- Icon: 💳
+- Title: Pay for Your Seat
+- Description: Choose your payment method. You can pay using your TaleemXpress wallet (if you have sufficient balance) or by uploading a screenshot of your bank/EasyPaisa/JazzCash transfer.
+- Detail box:
+  - Option A — Wallet: Balance is deducted instantly
+  - Option B — Screenshot: Upload proof of transfer
+  - Accepted transfers: bank, EasyPaisa, JazzCash
+  - Screenshot is securely uploaded to our platform
+
+**STEP 6 — Submit Your Booking**
+- Icon: 📤
+- Title: Submit & Wait for Approval
+- Description: After payment, click Submit. Your booking is created with status "Pending Approval." You'll receive a confirmation email that your booking is under review.
+- Detail box:
+  - 📧 Email sent: Booking submitted — pending review
+  - Admin is also notified instantly
+  - Booking status shows "Pending" in your dashboard
+  - Do NOT close or refresh — wait for the submission to complete
+
+**STEP 7 — Admin Verifies Payment**
+- Icon: ✅
+- Title: Payment Verification
+- Description: Our admin reviews your booking and payment screenshot. This typically takes a few hours. Once verified, your seat is officially locked and your booking is marked as Confirmed.
+- Detail box:
+  - ✅ Approved → Booking status changes to "Confirmed"
+  - 📧 You receive a "Booking Confirmed" email
+  - ❌ If payment is invalid → status changes to "Declined"
+  - Declined wallet payments are fully refunded automatically
+
+**STEP 8 — Download Your Ticket**
+- Icon: 🎫
+- Title: Your Seat is Confirmed
+- Description: Once your booking is confirmed AND the departure is finalized by admin, you can download your digital ticket from your Bookings page. Show it at boarding.
+- Detail box:
+  - Go to My Bookings → click your booking
+  - Click "Download Ticket" once departure is confirmed
+  - Ticket shows: route, date, time, seat number, gender
+  - Keep it on your phone for boarding
+
+---
+
+### Refund Policy section (below steps):
+
+**Heading:** `Refund Policy`
+
+```
+• Refund requests must be submitted at least 12 hours before departure.
+• Go to My Bookings → select your booking → Request Refund.
+• 70% of your ticket price is returned to your TaleemXpress wallet.
+• 30% service fee is non-refundable.
+• Refund must be approved by admin before it is credited.
+```
+
+---
+
+### Policy cards section (below refund):
+
+Two cards:
+
+**Card 1 — Luggage Policy:**
+```
+1 medium bag + 1 small backpack per student.
+Extra luggage is charged accordingly.
+Oversized or excess items may be refused.
+```
+
+**Card 2 — Seat Policy:**
+```
+Bus seats are gender-assigned and locked after booking.
+Hiace trips do not have assigned seats.
+Maximum 9-10 students per Hiace.
+```
+
+---
+
+### CTA section at bottom:
+
+```
+Heading: Ready to Book Your Seat?
+Subheading: Sign up free and book in minutes.
+
+Buttons:
+  - "Create Free Account" → /register
+  - "Sign In" → /login
+  - "Browse Departures" (if logged in) → /departures
+```
+
+For the third button, check authStore. If user is logged in show "Browse Departures → /departures", otherwise show only the first two.
+
+---
+
+## STEP 7 — UPDATE MAPS PAGE
+
+If `apps/web/src/pages/Maps.jsx` or similar exists, update content only:
+
+**Page heading:** `Route Maps`
+**Subheading:** `See Every Route Clearly`
+
+**Intro text:**
+```
+These maps show the exact route plan for each major destination.
+Click any map to open the selected route directly in Google Maps.
+```
+
+**Route cards — keep exact IDs, URLs, and embed URLs from original blueprint:**
+
+1. Route 1: GIKI → Rawalpindi (26 No.)
+   - Via Faisal Movers 26 No. and Daewoo Express 26 No.
+   - mapsUrl: https://www.google.com/maps/dir/?api=1&origin=GIKI+Topi&destination=Daewoo+Express+Rawalpindi+26+No&waypoints=Faisal+Movers+Rawalpindi+26+No
+   - embedUrl: https://maps.google.com/maps?f=d&saddr=GIKI+Topi&daddr=Faisal+Movers+Rawalpindi+26+No+to:Daewoo+Express+Rawalpindi+26+No&output=embed
+
+2. Route 2: GIKI → Islamabad G-9 Peshawar Morr
+   - Direct route to Islamabad G-9 Peshawar Morr Market
+   - mapsUrl: https://www.google.com/maps/dir/?api=1&origin=GIKI+Topi&destination=Peshawar+Morr+Market+G-9+Islamabad
+   - embedUrl: https://maps.google.com/maps?f=d&saddr=GIKI+Topi&daddr=Peshawar+Morr+Market+G-9+Islamabad&output=embed
+
+3. Route 3: GIKI → Rawalpindi (via Hasan Abdal, Wah Cantt, Taxila)
+   - Hasan Abdal → Wah Cantt → Taxila → Daewoo Rawalpindi 26 No.
+   - mapsUrl: https://maps.app.goo.gl/YUXnNKCwdSSUgbBq6
+   - embedUrl: https://maps.google.com/maps?f=d&saddr=GIKI+Topi&daddr=Hasan+Abdal+to:Wahcant,+bahtar+mor,+main+GT+Rd,+opposite+police+station,+Phase-I+Wah,+Pakistan+to:Total+PARCO+Petrol+Pump,+GT+ROAD+NEAR+KHANPUR+MOORE+%28islamabad+bound%29,+Taxila,+Taxila,+47080,+Pakistan+to:Daewoo+Express+Rawalpindi+26+No&output=embed
+
+4. Route 4: GIKI → Abbottabad → Mansehra
+   - Abbottabad Daewoo Express → Niazi Express Terminal Mansehra
+   - mapsUrl: https://www.google.com/maps/dir/?api=1&origin=GIKI+Topi&destination=Niazi+Express+Terminal+Mansehra&waypoints=Daewoo+Express+Abbottabad
+   - embedUrl: https://maps.google.com/maps?f=d&saddr=GIKI+Topi&daddr=Daewoo+Express+Abbottabad+to:Niazi+Express+Terminal+Mansehra&output=embed
+
+**Per card action button text:** `Open Route in Google Maps`
+
+---
+
+## STEP 8 — MOBILE BOTTOM CTA
+
+If a mobile bottom CTA component exists, update its content:
+
+```
+Text: Book Online — ISB / RWP to GIKI
+Subtext: ISB: Rs 900 | RWP (26 No.): Rs 850
+
+Button: Book Now → /bookings
+Visibility: mobile only (md:hidden), appears when scrollY > 500
+```
+
+---
+
+## STEP 9 — VERIFICATION CHECKLIST
+
+After all changes, verify:
+
+- [ ] `npm run dev` starts without errors
+- [ ] Landing page (/) loads with new colors and content
+- [ ] `/how-to-book` loads the new page (no auth required)
+- [ ] `/bookings` route works (either existing or new PublicBookings page)
+- [ ] `/maps` loads with updated content
+- [ ] Navbar has "How to Book" link
+- [ ] Footer has updated content and "How to Book" link
+- [ ] All existing auth pages still work (/login, /register, /verify-email, /forgot-password)
+- [ ] Student dashboard (/dashboard) still works for logged-in user
+- [ ] Admin dashboard (/admin/dashboard) still works for admin user
+- [ ] Booking flow (/departures, /departures/:id/book) still works exactly as before
+- [ ] Wallet page still works
+- [ ] Color scheme is consistent across all pages (navy #14213d primary, golden #fca311 accent)
+- [ ] Dark mode toggle still works
+
+---
+
+## DO NOT TOUCH — FINAL REMINDER
+
+These files must NOT be modified:
+- `apps/server/**/*` — entire backend
+- `apps/web/src/store/**/*` — Zustand stores
+- `apps/web/src/lib/api.js` — Axios client
+- `apps/web/src/hooks/**/*` — custom hooks
+- `apps/web/src/pages/auth/**/*` — auth pages
+- `apps/web/src/pages/student/Dashboard.jsx` — student dashboard logic
+- `apps/web/src/pages/student/BookDeparture.jsx` — booking logic
+- `apps/web/src/pages/student/MyBookings.jsx` — bookings list logic
+- `apps/web/src/pages/student/BookingDetail.jsx` — booking detail logic
+- `apps/web/src/pages/student/Wallet.jsx` — wallet logic
+- `apps/web/src/pages/admin/**/*` — all admin pages
+- `apps/web/src/components/booking/SeatMap.jsx` — seat map logic
+- `apps/web/src/components/shared/ProtectedRoute.jsx`
+- `apps/web/src/components/shared/AdminRoute.jsx`
+- `apps/web/App.jsx` — only ADD new public routes, do not change existing ones
+- Any `.env` files
+- `package.json` files
+- `drizzle.config.js`

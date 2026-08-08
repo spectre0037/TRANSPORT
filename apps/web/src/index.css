@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --clay-bg: #f0f0f0;
+    --clay-surface: #ffffff;
+    --clay-surface-2: #e5e5e5;
+    --clay-primary: #14213d;
+    --clay-primary-light: #1d2d50;
+    --clay-accent: #fca311;
+    --clay-accent-dark: #d48a0e;
+    --clay-success: #4ade80;
+    --clay-warning: #fca311;
+    --clay-danger: #ef4444;
+    --clay-text: #000000;
+    --clay-text-muted: #666666;
+    --clay-border: #e5e5e5;
+    --clay-male: #14213d;
+    --clay-female: #fca311;
+  }
+
+  .dark {
+    --clay-bg: #0a0f1e;
+    --clay-surface: #14213d;
+    --clay-surface-2: #1d2d50;
+    --clay-primary: #fca311;
+    --clay-primary-light: #d48a0e;
+    --clay-accent: #fca311;
+    --clay-accent-dark: #d48a0e;
+    --clay-success: #4ade80;
+    --clay-warning: #fca311;
+    --clay-danger: #f87171;
+    --clay-text: #ffffff;
+    --clay-text-muted: #a0aec0;
+    --clay-border: #1d2d50;
+    --clay-male: #3b82f6;
+    --clay-female: #fca311;
+  }
+
+  * {
+    font-family: 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    background-color: var(--clay-bg);
+    color: var(--clay-text);
+  }
+}
+
+@layer components {
+  .clay-card {
+    @apply bg-white rounded-clay-lg shadow-clay p-6 border border-clay-border;
+  }
+
+  .clay-input {
+    @apply w-full px-4 py-3 rounded-clay bg-clay-surface shadow-clay-inset border border-clay-border
+           focus:outline-none focus:ring-2 focus:ring-clay-primary focus:border-clay-primary
+           placeholder:text-clay-text-muted transition-all duration-200;
+  }
+
+  .clay-btn {
+    @apply px-6 py-3 rounded-clay font-semibold shadow-clay transition-all duration-200
+           active:shadow-clay-inset hover:translate-y-[-1px] active:translate-y-[1px];
+  }
+
+  .clay-btn-primary {
+    @apply clay-btn bg-clay-primary text-white hover:bg-clay-primary;
+  }
+
+  .clay-btn-secondary {
+    @apply clay-btn bg-clay-accent text-white hover:bg-clay-accent;
+  }
+
+  .clay-btn-outline {
+    @apply clay-btn border-2 border-clay-primary text-clay-primary bg-transparent hover:bg-clay-surface-2;
+  }
+
+  .clay-btn-danger {
+    @apply clay-btn bg-clay-danger text-white hover:bg-clay-danger;
+  }
+
+  .clay-btn-success {
+    @apply clay-btn bg-clay-success text-white hover:bg-clay-success;
+  }
+
+  .clay-btn-sm {
+    @apply px-4 py-2 text-sm;
+  }
+
+  .clay-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .clay-sidebar {
+    @apply fixed left-0 top-0 h-full w-64 bg-white shadow-clay border-r border-clay-border z-40;
+  }
+
+  .clay-table {
+    @apply w-full border-collapse;
+  }
+
+  .clay-table th {
+    @apply px-4 py-3 text-left text-sm font-semibold text-clay-text-muted border-b border-clay-border;
+  }
+
+  .clay-table td {
+    @apply px-4 py-3 text-sm border-b border-clay-border;
+  }
+
+  .clay-table tr:hover td {
+    @apply bg-clay-bg;
+  }
+}

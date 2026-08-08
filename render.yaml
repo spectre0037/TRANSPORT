@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: taleemxpress-api
+    env: node
+    plan: free
+    rootDir: apps/server
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
