@@ -18,11 +18,26 @@ import { authenticate, requireVerified } from './middleware/auth.middleware.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', process.env.FRONTEND_URL].filter(Boolean),
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+  ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim()).filter(Boolean) : []),
+].filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
   credentials: true,
-}));
+};
+
+// Middleware
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
