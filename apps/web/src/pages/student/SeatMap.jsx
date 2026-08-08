@@ -1,10 +1,57 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Bus, ArrowLeft, Check, Upload, User, Wallet, CreditCard, Loader } from 'lucide-react';
+import { Bus, ArrowLeft, Check, Upload, User, Wallet, CreditCard, Loader, Copy, CheckCheck, Landmark } from 'lucide-react';
 import api from '../../lib/api';
 import toast from 'react-hot-toast';
 import useAuthStore from '../../stores/authStore';
+
+const BANK_ACCOUNTS = [
+  { id: 'allied', bankName: 'Allied Bank', accountNumber: '04770010149883140017', preferred: true },
+  { id: 'jazzcash', bankName: 'Jazzcash', accountNumber: '03253601441', preferred: false },
+];
+
+function CopyableAccountCard({ account }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(account.accountNumber);
+      setCopied(true);
+      toast.success(`${account.bankName} account number copied!`);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error('Could not copy — please copy manually');
+    }
+  };
+
+  return (
+    <div className={`rounded-clay-lg border-2 p-4 text-left transition-all ${account.preferred ? 'border-clay-primary bg-clay-primary/5' : 'border-clay-border bg-white'}`}>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <div className="flex items-center gap-2">
+          <Landmark size={16} className="text-clay-primary" />
+          <span className="font-bold text-clay-text text-sm">{account.bankName}</span>
+        </div>
+        {account.preferred && (
+          <span className="clay-badge text-[10px] bg-clay-primary text-white">Preferred</span>
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={handleCopy}
+        className="flex w-full items-center justify-between gap-2 rounded-clay border border-clay-border bg-clay-bg px-3 py-2.5 transition-colors hover:border-clay-primary active:scale-[0.98]"
+      >
+        <span className="font-mono text-sm text-clay-text tracking-wide truncate">{account.accountNumber}</span>
+        {copied ? (
+          <CheckCheck size={16} className="flex-shrink-0 text-clay-success" />
+        ) : (
+          <Copy size={16} className="flex-shrink-0 text-clay-muted" />
+        )}
+      </button>
+      <p className="mt-1.5 text-[11px] text-clay-muted">{copied ? 'Copied to clipboard!' : 'Tap the account number to copy'}</p>
+    </div>
+  );
+}
 
 export default function SeatMapPage() {
   const { id } = useParams();
@@ -260,7 +307,7 @@ export default function SeatMapPage() {
                 <Upload className="mb-2 text-clay-primary" size={28} />
                 <p className="font-bold text-clay-text mb-1">Upload Screenshot</p>
                 <p className="text-sm text-clay-muted">Pay via bank transfer & upload proof</p>
-                <p className="text-xs text-clay-muted mt-1">Admin will verify your payment</p>
+                <p className="text-xs text-clay-muted mt-1">click here for details</p>
                 <div className="clay-btn-outline w-full mt-3 clay-btn-sm text-center">Upload Proof</div>
               </button>
             </div>
@@ -273,8 +320,15 @@ export default function SeatMapPage() {
             <Upload className="mx-auto text-clay-primary" size={36} />
             <h3 className="font-bold text-clay-text text-lg">Upload Payment Screenshot</h3>
             <p className="text-sm text-clay-muted max-w-sm mx-auto">
-              Transfer <strong>PKR {price}</strong> to the TaleemXpress bank account and upload the receipt screenshot.
+              Transfer <strong>PKR {price}</strong> to one of the TaleemXpress accounts below and upload the receipt screenshot.
             </p>
+
+            {/* Bank account details — click to copy */}
+            <div className="grid grid-cols-1 gap-3 text-left sm:grid-cols-2 max-w-lg mx-auto">
+              {BANK_ACCOUNTS.map((account) => (
+                <CopyableAccountCard key={account.id} account={account} />
+              ))}
+            </div>
 
             <div className="border-2 border-dashed border-clay-border rounded-clay-lg p-8 bg-clay-bg/50">
               <input

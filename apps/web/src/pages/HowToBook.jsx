@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useAuthStore from '../stores/authStore';
 import logoImage from '../assets/hiace (1).png';
+import { Check, Copy } from 'lucide-react';
 
 const steps = [
   {
@@ -73,9 +74,37 @@ const policies = [
   },
 ];
 
+const paymentAccounts = [
+  {
+    id: 'allied-bank',
+    label: 'Option 1 (preferred)',
+    bankName: 'Allied Bank',
+    accountNumber: '04770010149883140017',
+  },
+  {
+    id: 'jazzcash',
+    label: 'Option 2',
+    bankName: 'Jazzcash',
+    accountNumber: '03253601441',
+  },
+];
+
 export default function HowToBook() {
   const { user } = useAuthStore();
   const [imageError, setImageError] = useState(false);
+  const [copiedAccount, setCopiedAccount] = useState('');
+
+  const handleCopyAccount = async (accountNumber, id) => {
+    try {
+      await navigator.clipboard.writeText(accountNumber);
+      setCopiedAccount(id);
+      window.setTimeout(() => {
+        setCopiedAccount((current) => (current === id ? '' : current));
+      }, 1500);
+    } catch {
+      setCopiedAccount('');
+    }
+  };
 
   return (
     <main className="min-h-screen bg-clay-bg px-4 py-14 text-clay-text sm:px-6 sm:py-16">
@@ -139,6 +168,44 @@ export default function HowToBook() {
               <p className="text-sm leading-7 text-clay-text-muted">{policy.body}</p>
             </article>
           ))}
+        </section>
+
+        <section className="clay-card space-y-4">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-clay-accent">Payment Accounts</p>
+            <h2 className="font-display text-2xl font-bold text-clay-primary md:text-3xl">Tap an account number to copy it</h2>
+            <p className="text-sm leading-7 text-clay-text-muted">Use either of the accounts below for ticket payment. Allied Bank is the preferred option.</p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {paymentAccounts.map((account) => {
+              const isCopied = copiedAccount === account.id;
+
+              return (
+                <button
+                  key={account.id}
+                  type="button"
+                  onClick={() => handleCopyAccount(account.accountNumber, account.id)}
+                  className="group w-full rounded-clay border border-dashed border-clay-border bg-clay-bg p-4 text-left transition hover:border-clay-accent hover:bg-clay-accent/10"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1">
+                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-clay-accent">{account.label}</p>
+                      <h3 className="font-display text-xl font-bold text-clay-primary">{account.bankName}</h3>
+                    </div>
+                    <span className="rounded-full bg-clay-surface px-3 py-1 text-xs font-semibold text-clay-primary shadow-clay">
+                      {isCopied ? 'Copied' : 'Tap to Copy'}
+                    </span>
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-between gap-3 rounded-clay bg-clay-surface px-4 py-3 shadow-clay">
+                    <span className="font-mono text-sm font-semibold tracking-wider text-clay-text break-all">{account.accountNumber}</span>
+                    {isCopied ? <Check size={18} className="shrink-0 text-clay-success" /> : <Copy size={18} className="shrink-0 text-clay-accent" />}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </section>
 
         <section className="clay-card flex flex-col gap-5 md:flex-row md:items-center md:justify-between">

@@ -65,7 +65,7 @@ export default function AdminPrivateBookings() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-clay-text">Private Bookings</h1>
+        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">Private Bookings</h1>
         <p className="text-clay-muted text-sm">Custom vehicle booking requests from students</p>
       </div>
 
@@ -75,7 +75,33 @@ export default function AdminPrivateBookings() {
           <p className="text-clay-muted">No private booking requests yet</p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <>
+        <div className="space-y-3 md:hidden">
+          {bookings.map((b, i) => (
+            <motion.div key={b.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }} className="clay-card space-y-3">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-semibold text-clay-text">{b.name}</p>
+                  <p className="text-xs text-clay-muted">{b.departureLocation} → {b.arrivalLocation}</p>
+                </div>
+                <span className={`clay-badge ${statusColors[b.status] || 'bg-gray-100 text-gray-700'}`}>{b.status}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div><p className="text-xs text-clay-muted">Vehicle</p><p>{VEHICLE_LABELS[b.vehicleType] || b.vehicleType}</p></div>
+                <div><p className="text-xs text-clay-muted">Trip</p><p>{b.tripType === 'return' ? 'Return' : 'One-way'}</p></div>
+                <div><p className="text-xs text-clay-muted">Date</p><p>{new Date(b.date).toLocaleDateString()}</p></div>
+                <div><p className="text-xs text-clay-muted">Time</p><p>{b.time}</p></div>
+                <div><p className="text-xs text-clay-muted">Budget</p><p className="font-bold text-clay-primary">PKR {parseFloat(b.budget).toLocaleString()}</p></div>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => setViewingBooking(b)} className="clay-btn-outline clay-btn-sm flex-1 text-xs">View</button>
+                <button onClick={() => handleDelete(b.id)} className="clay-btn-danger clay-btn-sm flex-1 text-xs">Delete</button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="hidden overflow-x-auto md:block">
           <table className="clay-table">
             <thead>
               <tr>
@@ -134,6 +160,7 @@ export default function AdminPrivateBookings() {
             </tbody>
           </table>
         </div>
+        </>
       )}
 
       {/* Detail Modal */}

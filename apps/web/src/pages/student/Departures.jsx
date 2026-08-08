@@ -25,61 +25,62 @@ export default function DeparturesPage() {
   if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin w-8 h-8 border-4 border-clay-primary border-t-transparent rounded-full"></div></div>;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">Departures</h1>
-        <p className="text-clay-muted text-sm">Browse and book available transport routes</p>
+    <div className="space-y-5 px-3 pb-24 sm:space-y-6 sm:px-0 sm:pb-6">
+      <div className="pt-1 px-1 sm:px-0">
+        <h1 className="text-lg font-bold text-clay-text sm:text-2xl md:text-3xl">Departures</h1>
+        <p className="text-clay-muted text-xs sm:text-sm">Browse and book available transport routes</p>
       </div>
 
-      {/* Filters */}
-      <div className="clay-card">
-        <div className="flex flex-wrap gap-3">
-          <div className="flex items-center gap-2 flex-1 min-w-0 sm:min-w-[200px]">
-            <Search size={18} className="text-clay-muted" />
+      {/* Filters — side by side always */}
+      <div className="clay-card p-3.5 sm:p-6">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+          <div className="relative">
+            <Search size={14} className="absolute left-2 top-1/2 -translate-y-1/2 text-clay-muted sm:left-3 sm:size-[18px]" />
             <input type="text" value={filter.from} onChange={(e) => setFilter((f) => ({ ...f, from: e.target.value }))}
-              className="clay-input" placeholder="From city..." />
+              className="clay-input w-full text-sm py-2 pl-7 pr-2 sm:text-base sm:py-2.5 sm:pl-10 sm:pr-3" placeholder="From city..." />
           </div>
-          <div className="flex items-center gap-2 flex-1 min-w-0 sm:min-w-[200px]">
-            <Search size={18} className="text-clay-muted" />
+          <div className="relative">
+            <Search size={14} className="absolute left-2 top-1/2 -translate-y-1/2 text-clay-muted sm:left-3 sm:size-[18px]" />
             <input type="text" value={filter.to} onChange={(e) => setFilter((f) => ({ ...f, to: e.target.value }))}
-              className="clay-input" placeholder="To city..." />
+              className="clay-input w-full text-sm py-2 pl-7 pr-2 sm:text-base sm:py-2.5 sm:pl-10 sm:pr-3" placeholder="To city..." />
           </div>
         </div>
       </div>
 
       {/* Departure List */}
       {filtered.length === 0 ? (
-        <div className="clay-card text-center py-12">
-          <Bus className="mx-auto text-clay-muted mb-3" size={40} />
-          <p className="text-clay-muted">No departures found</p>
+        <div className="clay-card text-center py-10 sm:py-12">
+          <Bus className="mx-auto text-clay-muted mb-3" size={34} />
+          <p className="text-clay-muted text-sm sm:text-base">No departures found</p>
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-3 sm:gap-4">
           {filtered.map((dep, i) => (
             <motion.div key={dep.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-              <Link to={`/departures/${dep.id}`} className="clay-card hover:shadow-clay-lg transition-all block">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-start gap-3 sm:items-center sm:gap-4">
-                    <div className="w-14 h-14 bg-clay-primary/10 rounded-clay flex items-center justify-center">
-                      <Bus className="text-clay-primary" size={24} />
+              <Link to={`/departures/${dep.id}`} className="clay-card hover:shadow-clay-lg transition-all block p-3.5 sm:p-6">
+                {/* Top row: icon + title + price, always side by side */}
+                <div className="flex items-center justify-between gap-2.5">
+                  <div className="flex items-center gap-2.5 min-w-0 sm:gap-4">
+                    <div className="w-10 h-10 flex-shrink-0 bg-clay-primary/10 rounded-clay flex items-center justify-center sm:w-14 sm:h-14">
+                      <Bus className="text-clay-primary" size={18} />
                     </div>
-                    <div>
-                      <h3 className="font-bold text-clay-text text-lg sm:text-xl">{dep.route}</h3>
-                      <div className="flex flex-wrap items-center gap-3 mt-1 text-sm text-clay-muted">
-                        <span className="flex items-center gap-1"><MapPin size={14} />{dep.fromCity} → {dep.toCity}</span>
-                        <span className="flex items-center gap-1"><Calendar size={14} />{new Date(dep.departureDate).toLocaleDateString()}</span>
-                        <span className="flex items-center gap-1"><Clock size={14} />{dep.departureTime}</span>
-                        <span className="flex items-center gap-1"><Users size={14} />{dep.totalSeats} seats</span>
-                      </div>
-                    </div>
+                    <h3 className="font-bold text-clay-text text-sm truncate sm:text-xl">{dep.route}</h3>
                   </div>
-                  <div className="flex items-center gap-4 sm:text-right">
-                    <div>
-                      <p className="text-xl font-bold text-clay-primary">PKR {dep.pricePerSeat}</p>
-                      <p className="text-xs text-clay-muted">per seat</p>
+                  <div className="flex items-center gap-2 flex-shrink-0 sm:gap-4">
+                    <div className="text-right">
+                      <p className="text-sm font-bold text-clay-primary sm:text-xl">PKR {dep.pricePerSeat}</p>
+                      <p className="text-[9px] text-clay-muted sm:text-xs">per seat</p>
                     </div>
-                    <ArrowRight className="text-clay-muted" size={20} />
+                    <ArrowRight className="text-clay-muted hidden sm:block" size={20} />
                   </div>
+                </div>
+
+                {/* Details — 2 per row on mobile, single line on desktop */}
+                <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 mt-3 text-[11px] text-clay-muted sm:flex sm:flex-wrap sm:items-center sm:gap-3 sm:mt-1 sm:ml-[72px] sm:text-sm">
+                  <span className="flex items-center gap-1 min-w-0 truncate"><MapPin size={12} className="flex-shrink-0 sm:size-[14px]" />{dep.fromCity} → {dep.toCity}</span>
+                  <span className="flex items-center gap-1 min-w-0 truncate"><Users size={12} className="flex-shrink-0 sm:size-[14px]" />{dep.totalSeats} seats</span>
+                  <span className="flex items-center gap-1 min-w-0 truncate"><Calendar size={12} className="flex-shrink-0 sm:size-[14px]" />{new Date(dep.departureDate).toLocaleDateString()}</span>
+                  <span className="flex items-center gap-1 min-w-0 truncate"><Clock size={12} className="flex-shrink-0 sm:size-[14px]" />{dep.departureTime}</span>
                 </div>
               </Link>
             </motion.div>

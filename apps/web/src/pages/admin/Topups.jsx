@@ -45,11 +45,40 @@ export default function AdminTopups() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-clay-text">Wallet Top-up Requests</h1>
+        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">Wallet Top-up Requests</h1>
         <p className="text-clay-muted text-sm">Review payment screenshots and approve/reject top-up requests</p>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="space-y-3 md:hidden">
+        {requests.length === 0 ? (
+          <div className="clay-card text-center py-8 text-clay-muted">No top-up requests</div>
+        ) : requests.map((r) => (
+          <div key={r.id} className={`clay-card space-y-3 ${r.status === 'pending' ? 'border-l-4 border-l-yellow-400' : ''}`}>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-medium text-clay-text">{r.user?.fullName}</p>
+                <p className="text-xs text-clay-muted break-all">{r.user?.email}</p>
+              </div>
+              <span className={`clay-badge ${statusColor(r.status)}`}>{r.status}</span>
+            </div>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div><p className="text-xs text-clay-muted">Amount</p><p className="font-bold text-clay-primary">PKR {r.amount}</p></div>
+              <div><p className="text-xs text-clay-muted">Date</p><p className="text-xs">{new Date(r.createdAt).toLocaleString()}</p></div>
+              <div className="col-span-2">
+                {r.screenshotUrl ? <a href={r.screenshotUrl} target="_blank" rel="noopener noreferrer" className="clay-btn-outline clay-btn-sm text-xs inline-flex items-center gap-1"><Eye size={14} /> View</a> : <span className="text-xs text-clay-muted">No screenshot</span>}
+              </div>
+            </div>
+            {r.status === 'pending' && (
+              <div className="flex gap-2">
+                <button disabled={processing === r.id} onClick={() => processRequest(r.id, 'approved', r.amount)} className="clay-btn-success clay-btn-sm flex-1 disabled:opacity-50">{processing === r.id ? '...' : 'Approve'}</button>
+                <button disabled={processing === r.id} onClick={() => processRequest(r.id, 'rejected')} className="clay-btn-danger clay-btn-sm flex-1 disabled:opacity-50">Reject</button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
         <table className="clay-table">
           <thead>
             <tr><th>Student</th><th>Amount</th><th>Screenshot</th><th>Date</th><th>Status</th><th>Actions</th></tr>

@@ -51,11 +51,37 @@ export default function AdminUsers() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-clay-text">User Management</h1>
+        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">User Management</h1>
         <p className="text-clay-muted text-sm">View and manage registered users</p>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="space-y-3 md:hidden">
+        {users.map((u) => (
+          <div key={u.id} className="clay-card space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-clay-primary/10 flex items-center justify-center text-clay-primary font-bold text-sm shrink-0">{u.fullName?.charAt(0)}</div>
+              <div className="min-w-0">
+                <p className="font-medium text-clay-text">{u.fullName}</p>
+                <p className="text-xs text-clay-muted break-all">{u.email}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div><p className="text-xs text-clay-muted">Phone</p><p>{u.phone || '-'}</p></div>
+              <div><p className="text-xs text-clay-muted">City</p><p>{u.preferredCity || '-'}</p></div>
+              <div><p className="text-xs text-clay-muted">Role</p><p><span className={`clay-badge ${u.role === 'admin' ? 'bg-clay-secondary text-white' : 'bg-clay-bg text-clay-text'}`}>{u.role}</span></p></div>
+              <div><p className="text-xs text-clay-muted">Wallet</p><p className="font-bold text-clay-primary">PKR {u.walletBalance}</p></div>
+              <div className="col-span-2"><p className="text-xs text-clay-muted">Verified</p><p><span className={`clay-badge ${u.isEmailVerified ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{u.isEmailVerified ? 'Yes' : 'No'}</span></p></div>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button onClick={() => toggleRole(u.id, u.role)} className="clay-btn-outline clay-btn-sm text-xs w-full sm:w-auto"><Shield size={12} className="mr-1" />{u.role === 'admin' ? 'Demote' : 'Promote'}</button>
+              <button onClick={() => adjustWallet(u.id)} className="clay-btn-outline clay-btn-sm text-xs w-full sm:w-auto">Wallet</button>
+              <button onClick={() => deleteUser(u.id, u.fullName)} className="clay-btn-danger clay-btn-sm text-xs w-full sm:w-auto"><Trash2 size={12} /> Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
         <table className="clay-table">
           <thead>
             <tr><th>User</th><th>Contact</th><th>City</th><th>Role</th><th>Wallet</th><th>Verified</th><th>Actions</th></tr>

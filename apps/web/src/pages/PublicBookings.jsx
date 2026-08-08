@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from '../components/layout/Navbar';
 
 export default function PublicBookings() {
   const [imageError, setImageError] = useState(false);
 
   return (
-    <main className="min-h-screen bg-clay-bg px-4 py-14 text-clay-text sm:px-6 sm:py-16">
-      <div className="mx-auto max-w-5xl space-y-8">
+    <main className="min-h-screen bg-clay-bg text-clay-text">
+      <Navbar />
+      <div className="mx-auto max-w-5xl space-y-8 px-4 py-14 pt-24 sm:px-6 sm:py-16 sm:pt-28">
         <section className="overflow-hidden rounded-clay-lg border border-clay-border bg-clay-surface p-6 shadow-clay-lg md:p-10">
           <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
             <div className="space-y-5">

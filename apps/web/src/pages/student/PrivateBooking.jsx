@@ -7,10 +7,10 @@ import useAuthStore from '../../stores/authStore';
 import toast from 'react-hot-toast';
 
 const VEHICLE_OPTIONS = [
-  { value: 'car', label: '🚗 Car (5-seater)', seats: 5 },
-  { value: 'hiace', label: '🚐 Hiace (17-seater)', seats: 17 },
-  { value: 'coaster', label: '🚌 Coaster (32-seater)', seats: 32 },
-  { value: 'bus', label: '🚌 Bus (45-seater)', seats: 45 },
+  { value: 'car', label: '🚗 Car', sub: '5-seater', seats: 5 },
+  { value: 'hiace', label: '🚐 Hiace', sub: '17-seater', seats: 17 },
+  { value: 'coaster', label: '🚌 Coaster', sub: '32-seater', seats: 32 },
+  { value: 'bus', label: '🚌 Bus', sub: '45-seater', seats: 45 },
 ];
 
 const VEHICLE_LABELS = {
@@ -63,9 +63,7 @@ export default function PrivateBooking() {
     try {
       await api.post('/api/private-bookings', form);
       toast.success('Your private booking request has been submitted! Admin will review it shortly.');
-      // Reset form but keep name/phone
       setForm((p) => ({ ...p, vehicleType: '', departureLocation: '', arrivalLocation: '', date: '', time: '', tripType: 'one-way', duration: '', budget: '' }));
-      // Refresh requests
       const res = await api.get('/api/private-bookings/my');
       setMyRequests(res.data);
     } catch (err) {
@@ -75,175 +73,176 @@ export default function PrivateBooking() {
   };
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 px-0 sm:px-0">
-      <div>
-        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">Private Booking</h1>
-        <p className="text-clay-muted text-sm">Request a custom vehicle for your trip</p>
+    <div className="mx-auto max-w-2xl space-y-4 px-3 pb-24 sm:space-y-6 sm:px-0 sm:pb-6">
+      <div className="pt-1 px-1 sm:px-0">
+        <h1 className="text-lg font-bold text-clay-text sm:text-2xl md:text-3xl">Private Booking</h1>
+        <p className="text-clay-muted text-xs sm:text-sm">Request a custom vehicle for your trip</p>
       </div>
 
       {/* Form */}
       <motion.form onSubmit={handleSubmit} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
-        className="clay-card space-y-5">
+        className="clay-card space-y-4 p-3.5 sm:space-y-5 sm:p-6">
 
-        {/* Name */}
-        <div>
-          <label className="text-sm font-semibold text-clay-text mb-1 block">Your Name *</label>
-          <input type="text" value={form.name} onChange={(e) => update('name', e.target.value)}
-            className="clay-input" placeholder="Enter your name" required />
-        </div>
-
-        {/* Phone */}
-        <div>
-          <label className="text-sm font-semibold text-clay-text mb-1 block">Phone Number *</label>
-          <div className="relative">
-            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-clay-muted" size={18} />
-            <input type="tel" value={form.phone} onChange={(e) => update('phone', e.target.value)}
-              className="clay-input pl-10" placeholder="+923001234567" required />
+        {/* Name & Phone — side by side always */}
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
+          <div>
+            <label className="text-xs font-semibold text-clay-text mb-1 block sm:text-sm">Name *</label>
+            <input type="text" value={form.name} onChange={(e) => update('name', e.target.value)}
+              className="clay-input w-full text-sm py-2 px-2.5 sm:text-base sm:py-2.5 sm:px-3" placeholder="Your name" required />
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-clay-text mb-1 block sm:text-sm">Phone *</label>
+            <div className="relative">
+              <Phone className="absolute left-2 top-1/2 -translate-y-1/2 text-clay-muted sm:left-3" size={14} />
+              <input type="tel" value={form.phone} onChange={(e) => update('phone', e.target.value)}
+                className="clay-input w-full text-sm py-2 pl-7 pr-2 sm:text-base sm:py-2.5 sm:pl-10 sm:pr-3" placeholder="+92300..." required />
+            </div>
           </div>
         </div>
 
-        {/* Vehicle Type */}
+        {/* Vehicle Type — 2x2 grid always, compact cards */}
         <div>
-          <label className="text-sm font-semibold text-clay-text mb-1 block">Vehicle Type *</label>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <label className="text-xs font-semibold text-clay-text mb-1.5 block sm:text-sm">Vehicle Type *</label>
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             {VEHICLE_OPTIONS.map((v) => (
               <button key={v.value} type="button" onClick={() => update('vehicleType', v.value)}
-                className={`p-4 rounded-clay-lg border-2 text-left transition-all ${
+                className={`min-h-[52px] rounded-clay border-2 px-2.5 py-2 text-left transition-all active:scale-[0.97] sm:min-h-[64px] sm:rounded-clay-lg sm:p-4 ${
                   form.vehicleType === v.value
                     ? 'border-clay-primary bg-clay-primary/5 shadow-clay'
                     : 'border-clay-border bg-white hover:border-clay-primary/50'
                 }`}>
-                <p className="font-bold text-clay-text text-sm">{v.label}</p>
-                <p className="text-xs text-clay-muted mt-0.5">{v.seats} seats</p>
+                <p className="font-bold text-clay-text text-xs sm:text-sm">{v.label}</p>
+                <p className="text-[10px] text-clay-muted mt-0.5 sm:text-xs">{v.sub}</p>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Departure & Arrival */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {/* Departure & Arrival — side by side always */}
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
           <div>
-            <label className="text-sm font-semibold text-clay-text mb-1 block">Departure Location *</label>
+            <label className="text-xs font-semibold text-clay-text mb-1 block sm:text-sm">From *</label>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-clay-muted" size={18} />
+              <MapPin className="absolute left-2 top-1/2 -translate-y-1/2 text-clay-muted sm:left-3" size={14} />
               <input type="text" value={form.departureLocation} onChange={(e) => update('departureLocation', e.target.value)}
-                className="clay-input pl-10" placeholder="e.g., GIKI, Swabi" required />
+                className="clay-input w-full text-sm py-2 pl-7 pr-2 sm:text-base sm:py-2.5 sm:pl-10 sm:pr-3" placeholder="GIKI, Swabi" required />
             </div>
           </div>
           <div>
-            <label className="text-sm font-semibold text-clay-text mb-1 block">Arrival Location *</label>
+            <label className="text-xs font-semibold text-clay-text mb-1 block sm:text-sm">To *</label>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-clay-muted" size={18} />
+              <MapPin className="absolute left-2 top-1/2 -translate-y-1/2 text-clay-muted sm:left-3" size={14} />
               <input type="text" value={form.arrivalLocation} onChange={(e) => update('arrivalLocation', e.target.value)}
-                className="clay-input pl-10" placeholder="e.g., Lahore" required />
+                className="clay-input w-full text-sm py-2 pl-7 pr-2 sm:text-base sm:py-2.5 sm:pl-10 sm:pr-3" placeholder="Lahore" required />
             </div>
           </div>
         </div>
 
-        {/* Date & Time */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {/* Date & Time — side by side always */}
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
           <div>
-            <label className="text-sm font-semibold text-clay-text mb-1 block">Date *</label>
+            <label className="text-xs font-semibold text-clay-text mb-1 block sm:text-sm">Date *</label>
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-clay-muted" size={18} />
+              <Calendar className="absolute left-2 top-1/2 -translate-y-1/2 text-clay-muted sm:left-3" size={14} />
               <input type="date" value={form.date} onChange={(e) => update('date', e.target.value)}
-                className="clay-input pl-10" required />
+                className="clay-input w-full text-sm py-2 pl-7 pr-1 sm:text-base sm:py-2.5 sm:pl-10 sm:pr-3" required />
             </div>
           </div>
           <div>
-            <label className="text-sm font-semibold text-clay-text mb-1 block">Time *</label>
+            <label className="text-xs font-semibold text-clay-text mb-1 block sm:text-sm">Time *</label>
             <div className="relative">
-              <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-clay-muted" size={18} />
+              <Clock className="absolute left-2 top-1/2 -translate-y-1/2 text-clay-muted sm:left-3" size={14} />
               <input type="time" value={form.time} onChange={(e) => update('time', e.target.value)}
-                className="clay-input pl-10" required />
+                className="clay-input w-full text-sm py-2 pl-7 pr-1 sm:text-base sm:py-2.5 sm:pl-10 sm:pr-3" required />
             </div>
           </div>
         </div>
 
-        {/* Trip Type */}
-        <div>
-          <label className="text-sm font-semibold text-clay-text mb-1 block">Trip Type *</label>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <button type="button" onClick={() => { update('tripType', 'one-way'); update('duration', ''); }}
-              className={`flex-1 py-3 rounded-clay font-bold text-sm transition-all ${
-                form.tripType === 'one-way'
-                  ? 'bg-clay-primary text-white shadow-clay'
-                  : 'bg-white border-2 border-clay-border text-clay-text hover:border-clay-primary'
-              }`}>
-              ➡️ One-way
-            </button>
-            <button type="button" onClick={() => update('tripType', 'return')}
-              className={`flex-1 py-3 rounded-clay font-bold text-sm transition-all ${
-                form.tripType === 'return'
-                  ? 'bg-clay-primary text-white shadow-clay'
-                  : 'bg-white border-2 border-clay-border text-clay-text hover:border-clay-primary'
-              }`}>
-              🔄 Return
-            </button>
-          </div>
-        </div>
-
-        {/* Duration (shown only for return) */}
-        {form.tripType === 'return' && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
-            <label className="text-sm font-semibold text-clay-text mb-1 block">Duration of Stay *</label>
-            <div className="relative">
-              <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-clay-muted" size={18} />
-              <input type="text" value={form.duration} onChange={(e) => update('duration', e.target.value)}
-                className="clay-input pl-10" placeholder="e.g., 3 days, 1 week" />
+        {/* Trip Type & Duration — side by side; duration slides in next to it */}
+        <div className={`grid gap-2.5 sm:gap-4 ${form.tripType === 'return' ? 'grid-cols-2' : 'grid-cols-1'}`}>
+          <div>
+            <label className="text-xs font-semibold text-clay-text mb-1.5 block sm:text-sm">Trip Type *</label>
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              <button type="button" onClick={() => { update('tripType', 'one-way'); update('duration', ''); }}
+                className={`min-h-[40px] rounded-clay text-xs font-bold transition-all active:scale-[0.97] sm:min-h-[48px] sm:text-sm ${
+                  form.tripType === 'one-way'
+                    ? 'bg-clay-primary text-white shadow-clay'
+                    : 'bg-white border-2 border-clay-border text-clay-text hover:border-clay-primary'
+                }`}>
+                ➡️ One-way
+              </button>
+              <button type="button" onClick={() => update('tripType', 'return')}
+                className={`min-h-[40px] rounded-clay text-xs font-bold transition-all active:scale-[0.97] sm:min-h-[48px] sm:text-sm ${
+                  form.tripType === 'return'
+                    ? 'bg-clay-primary text-white shadow-clay'
+                    : 'bg-white border-2 border-clay-border text-clay-text hover:border-clay-primary'
+                }`}>
+                🔄 Return
+              </button>
             </div>
-          </motion.div>
-        )}
+          </div>
+
+          {form.tripType === 'return' && (
+            <motion.div initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }}>
+              <label className="text-xs font-semibold text-clay-text mb-1.5 block sm:text-sm">Duration of Stay *</label>
+              <div className="relative">
+                <Clock className="absolute left-2 top-1/2 -translate-y-1/2 text-clay-muted sm:left-3" size={14} />
+                <input type="text" value={form.duration} onChange={(e) => update('duration', e.target.value)}
+                  className="clay-input w-full text-sm py-2 pl-7 pr-2 sm:text-base sm:py-2.5 sm:pl-10 sm:pr-3" placeholder="e.g., 3 days" />
+              </div>
+            </motion.div>
+          )}
+        </div>
 
         {/* Budget */}
         <div>
-          <label className="text-sm font-semibold text-clay-text mb-1 block">Desired Budget (PKR) *</label>
+          <label className="text-xs font-semibold text-clay-text mb-1 block sm:text-sm">Desired Budget (PKR) *</label>
           <div className="relative">
-            <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 text-clay-muted" size={18} />
+            <Wallet className="absolute left-2 top-1/2 -translate-y-1/2 text-clay-muted sm:left-3" size={14} />
             <input type="number" value={form.budget} onChange={(e) => update('budget', e.target.value)}
-              className="clay-input pl-10" placeholder="e.g., 15000" min={1} required />
+              className="clay-input w-full text-sm py-2 pl-7 pr-2 sm:text-base sm:py-2.5 sm:pl-10 sm:pr-3" placeholder="e.g., 15000" min={1} required />
           </div>
         </div>
 
         <button type="submit" disabled={submitting}
-          className="clay-btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50">
-          {submitting ? <><Loader size={16} className="animate-spin" /> Submitting...</> : <><Send size={16} /> Submit Private Booking Request</>}
+          className="clay-btn-primary w-full min-h-[46px] flex items-center justify-center gap-2 text-sm sm:min-h-[52px] sm:text-base disabled:opacity-50">
+          {submitting ? <><Loader size={15} className="animate-spin" /> Submitting...</> : <><Send size={15} /> Submit Private Booking Request</>}
         </button>
       </motion.form>
 
       {/* My Previous Requests */}
-      <div className="clay-card">
-        <h2 className="font-bold text-clay-text mb-4 flex items-center gap-2">
-          <History size={18} /> My Previous Requests
+      <div className="clay-card p-3.5 sm:p-6">
+        <h2 className="font-bold text-clay-text mb-3 flex items-center gap-2 text-sm sm:mb-4 sm:text-lg">
+          <History size={16} /> My Previous Requests
         </h2>
         {loadingRequests ? (
           <div className="flex justify-center py-6">
             <div className="animate-spin w-6 h-6 border-4 border-clay-primary border-t-transparent rounded-full"></div>
           </div>
         ) : myRequests.length === 0 ? (
-          <p className="text-clay-muted text-sm text-center py-4">You haven't made any private booking requests yet.</p>
+          <p className="text-clay-muted text-xs text-center py-4 sm:text-sm">You haven't made any private booking requests yet.</p>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2.5 sm:space-y-3">
             {myRequests.map((r, i) => (
               <motion.div key={r.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
-                className="flex items-center justify-between p-3 rounded-clay bg-clay-bg/50">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-semibold text-clay-text text-sm">{VEHICLE_LABELS[r.vehicleType] || r.vehicleType}</span>
-                    <span className={`clay-badge text-[10px] ${statusColors[r.status] || 'bg-gray-100 text-gray-700'}`}>
+                className="flex items-center justify-between gap-2 p-2.5 rounded-clay bg-clay-bg/50 sm:gap-3 sm:p-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-1.5 mb-0.5">
+                    <span className="font-semibold text-clay-text text-xs sm:text-sm">{VEHICLE_LABELS[r.vehicleType] || r.vehicleType}</span>
+                    <span className={`clay-badge text-[9px] sm:text-[10px] ${statusColors[r.status] || 'bg-gray-100 text-gray-700'}`}>
                       {r.status}
                     </span>
                   </div>
-                  <p className="text-xs text-clay-muted">
+                  <p className="text-[11px] text-clay-muted break-words sm:text-xs">
                     {r.departureLocation} → {r.arrivalLocation} • {new Date(r.date).toLocaleDateString()} • {r.time}
                   </p>
                   {r.adminNotes && (
-                    <p className="text-xs text-clay-muted italic mt-0.5">Admin note: {r.adminNotes}</p>
+                    <p className="text-[11px] text-clay-muted italic mt-0.5 break-words sm:text-xs">Note: {r.adminNotes}</p>
                   )}
                 </div>
-                <div className="text-right flex-shrink-0 ml-3">
-                  <p className="text-sm font-bold text-clay-primary">PKR {parseFloat(r.budget).toLocaleString()}</p>
-                  <p className="text-[10px] text-clay-muted">{new Date(r.createdAt).toLocaleDateString()}</p>
+                <div className="text-right flex-shrink-0">
+                  <p className="text-xs font-bold text-clay-primary sm:text-sm">PKR {parseFloat(r.budget).toLocaleString()}</p>
+                  <p className="text-[9px] text-clay-muted sm:text-[10px]">{new Date(r.createdAt).toLocaleDateString()}</p>
                 </div>
               </motion.div>
             ))}

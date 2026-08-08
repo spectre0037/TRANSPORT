@@ -68,7 +68,7 @@ export default function RouteHistory() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-clay-text">Route History</h1>
+        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">Route History</h1>
         <p className="text-clay-muted text-sm">View completed and past routes with passenger manifests</p>
       </div>
 
@@ -79,7 +79,44 @@ export default function RouteHistory() {
           <p className="text-xs text-clay-muted mt-1">Past/completed departures will appear here</p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <>
+        <div className="space-y-3 md:hidden">
+          {history.map((dep) => (
+            <div key={dep.id} className="clay-card space-y-3">
+              <button onClick={() => toggleExpand(dep.id)} className="flex w-full items-start justify-between gap-3 text-left">
+                <div className="min-w-0">
+                  <p className="font-semibold text-clay-text">{dep.route}</p>
+                  <p className="text-xs text-clay-muted">{dep.fromCity} → {dep.toCity}</p>
+                </div>
+                <span className={`clay-badge text-xs ${statusColors[dep.status] || 'bg-gray-100 text-gray-700'}`}>{dep.status}</span>
+              </button>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div><p className="text-xs text-clay-muted">Date</p><p>{new Date(dep.departureDate).toLocaleDateString()}</p></div>
+                <div><p className="text-xs text-clay-muted">Time</p><p>{dep.departureTime}</p></div>
+                <div><p className="text-xs text-clay-muted">Passengers</p><p className="font-semibold">{dep.passengerCount || 0} / {dep.totalSeats}</p></div>
+                <div><p className="text-xs text-clay-muted">Revenue</p><p className="font-bold text-clay-primary">PKR {parseFloat(dep.totalRevenue || 0).toLocaleString()}</p></div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => toggleExpand(dep.id)} className="clay-btn-outline clay-btn-sm text-xs flex-1">{expandedId === dep.id ? 'Hide passengers' : 'Show passengers'}</button>
+                <button onClick={() => handleDelete(dep.id, dep.route)} className="clay-btn-danger clay-btn-sm text-xs">Delete</button>
+              </div>
+              {expandedId === dep.id && (
+                <div className="rounded-clay bg-clay-bg/50 p-3 space-y-2">
+                  <p className="text-sm font-semibold text-clay-text">Passenger Manifest</p>
+                  {passengersLoading ? <div className="py-4 text-center text-clay-muted">Loading...</div> : passengers.length === 0 ? <p className="text-sm text-clay-muted">No approved passengers for this route</p> : passengers.map((p) => (
+                    <div key={p.bookingId} className="rounded-clay bg-white p-3 text-sm">
+                      <p className="font-medium text-clay-text">{p.fullName}</p>
+                      <p className="text-xs text-clay-muted break-all">{p.bookingReference}</p>
+                      <p className="text-xs text-clay-muted">Seat #{p.seatNumber} • {p.gender === 'male' ? 'Male' : 'Female'}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="hidden overflow-x-auto md:block">
           <table className="clay-table">
             <thead>
               <tr>
@@ -200,6 +237,7 @@ export default function RouteHistory() {
             </tbody>
           </table>
         </div>
+        </>
       )}
     </div>
   );

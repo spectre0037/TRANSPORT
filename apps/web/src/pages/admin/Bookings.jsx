@@ -40,11 +40,51 @@ export default function AdminBookings() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-clay-text">Bookings Management</h1>
+        <h1 className="text-2xl font-bold text-clay-text sm:text-3xl">Bookings Management</h1>
         <p className="text-clay-muted text-sm">Review payment screenshots and approve/reject bookings</p>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="space-y-3 md:hidden">
+        {bookings.length === 0 ? (
+          <div className="clay-card text-center py-8 text-clay-muted">No bookings yet</div>
+        ) : bookings.map((b) => (
+          <div key={b.id} className={`clay-card space-y-3 ${b.status === 'pending_approval' ? 'border-l-4 border-l-yellow-400' : ''}`}>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-mono text-xs text-clay-muted">{b.bookingReference}</p>
+                <p className="font-medium text-clay-text">{b.user?.fullName}</p>
+                <p className="text-xs text-clay-muted break-all">{b.user?.email}</p>
+              </div>
+              <span className={`clay-badge ${statusColor(b.status)}`}>{b.status?.replace('_', ' ')}</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div><p className="text-xs text-clay-muted">Route</p><p className="font-medium">{b.departure?.route}</p></div>
+              <div><p className="text-xs text-clay-muted">Seat</p><p className="font-medium">{b.seat?.seatNumber}</p></div>
+              <div><p className="text-xs text-clay-muted">Gender</p><p className="font-medium">{b.gender === 'male' ? '👨 Male' : b.gender === 'female' ? '👩 Female' : '-'}</p></div>
+              <div><p className="text-xs text-clay-muted">Amount</p><p className="font-bold text-clay-primary">PKR {b.totalAmount}</p></div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {b.paymentScreenshotUrl ? (
+                <a href={b.paymentScreenshotUrl} target="_blank" rel="noopener noreferrer" className="clay-btn-outline clay-btn-sm text-xs inline-flex items-center gap-1"> <Eye size={14} /> View</a>
+              ) : b.status === 'approved' ? (
+                <span className="text-xs text-clay-success">Wallet</span>
+              ) : (
+                <span className="text-xs text-clay-muted">No screenshot</span>
+              )}
+              {b.status === 'pending_approval' && (
+                <>
+                  <button onClick={() => updateStatus(b.id, 'approved', 'verified')} className="clay-btn-success clay-btn-sm flex items-center gap-1 text-xs"> <Check size={14} /> Approve</button>
+                  <button onClick={() => updateStatus(b.id, 'rejected')} className="clay-btn-danger clay-btn-sm flex items-center gap-1 text-xs"> <X size={14} /> Reject</button>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
         <table className="clay-table">
           <thead>
             <tr><th>Reference</th><th>Student</th><th>Route</th><th>Seat</th><th>Gender</th><th>Amount</th><th>Screenshot</th><th>Status</th><th>Actions</th></tr>
