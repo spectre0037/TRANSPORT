@@ -135,8 +135,8 @@ export default function LandingPage() {
                 Comfortable, safe, and reliable travel between GIKI and nearby cities. Book online, pick your seat, pay securely — and get your ticket once confirmed. Maximum 9-10 students per Hiace, fixed transparent pricing, no hidden charges.
               </p>
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link to="/bookings" className="clay-btn-primary inline-flex items-center justify-center gap-2">
-                  Book a Seat <ArrowRight size={16} />
+                <Link to="/register" className="clay-btn-primary inline-flex items-center justify-center gap-2">
+                  Register Now <ArrowRight size={16} />
                 </Link>
                 <Link to="/how-to-book" className="clay-btn-outline inline-flex items-center justify-center gap-2">
                   How to Book
