@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import useAuthStore from '../stores/authStore';
 import logoImage from '../assets/hiace (1).png';
 import { Check, Copy } from 'lucide-react';
+import Navbar from '../components/layout/Navbar';
 
 const steps = [
   {
@@ -107,7 +108,9 @@ export default function HowToBook() {
   };
 
   return (
-    <main className="min-h-screen bg-clay-bg px-4 py-14 text-clay-text sm:px-6 sm:py-16">
+    <div className="min-h-screen bg-clay-bg">
+      <Navbar />
+      <main className="px-4 pb-14 pt-24 text-clay-text sm:px-6 sm:pb-16 sm:pt-28">
       <div className="mx-auto max-w-6xl space-y-10">
         <section className="grid gap-8 rounded-clay-lg border border-clay-border bg-clay-surface p-5 shadow-clay-lg md:grid-cols-[0.95fr_1.05fr] md:p-10">
           <div className="space-y-4">
@@ -220,6 +223,7 @@ export default function HowToBook() {
           </div>
         </section>
       </div>
-    </main>
+      </main>
+    </div>
   );
 }
