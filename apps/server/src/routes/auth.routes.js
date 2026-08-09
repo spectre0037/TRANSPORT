@@ -29,15 +29,6 @@ const queueEmail = ({ to, subject, html }) => {
   });
 };
 
-const queueVerificationOtpEmail = (userId, email) => {
-  (async () => {
-    const otp = await createOTP(userId, 'email_verify', 10);
-    queueEmail({ to: email, ...emailTemplates.sendOTP(otp) });
-  })().catch((otpErr) => {
-    console.error(`Background OTP generation failed for ${email}:`, otpErr?.message || otpErr);
-  });
-};
-
 // Register
 router.post('/register', async (req, res) => {
   try {
@@ -68,8 +59,9 @@ router.post('/register', async (req, res) => {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     await db.insert(refreshTokens).values({ userId: user.id, token: refreshToken, expiresAt });
 
-    // Do not block registration response on OTP generation or SMTP delivery.
-    queueVerificationOtpEmail(user.id, email);
+    // Ensure OTP exists; keep SMTP asynchronous so registration stays fast.
+    const otp = await createOTP(user.id, 'email_verify', 10);
+    queueEmail({ to: email, ...emailTemplates.sendOTP(otp) });
 
     res.status(201).json({
       message: 'Registration successful. Please verify your email.',

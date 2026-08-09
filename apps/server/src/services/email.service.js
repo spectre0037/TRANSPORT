@@ -2,9 +2,13 @@ import nodemailer from 'nodemailer';
 
 // Gmail SMTP transporter
 const transporter = nodemailer.createTransport({
+  pool: true,
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.SMTP_PORT || '587'),
   secure: false,
+  connectionTimeout: parseInt(process.env.SMTP_CONNECTION_TIMEOUT_MS || '8000'),
+  greetingTimeout: parseInt(process.env.SMTP_GREETING_TIMEOUT_MS || '8000'),
+  socketTimeout: parseInt(process.env.SMTP_SOCKET_TIMEOUT_MS || '15000'),
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
@@ -13,21 +17,80 @@ const transporter = nodemailer.createTransport({
 
 const SENDER_NAME = 'TaleemXpress';
 const SENDER_EMAIL = process.env.SMTP_FROM || process.env.SMTP_USER || 'xpresstaleem@gmail.com';
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const RESEND_EMAIL_FROM = process.env.EMAIL_FROM || SENDER_EMAIL;
 
-export const sendEmail = async ({ to, subject, html }) => {
-  try {
-    const info = await transporter.sendMail({
-      from: `"${SENDER_NAME}" <${SENDER_EMAIL}>`,
-      to,
+const delay = (ms) => new Promise((resolve) => {
+  setTimeout(resolve, ms);
+});
+
+const sendViaSmtp = async ({ to, subject, html }) => {
+  const info = await transporter.sendMail({
+    from: `"${SENDER_NAME}" <${SENDER_EMAIL}>`,
+    to,
+    subject,
+    html,
+  });
+
+  return { success: true, provider: 'smtp', messageId: info.messageId };
+};
+
+const sendViaResend = async ({ to, subject, html }) => {
+  if (!RESEND_API_KEY) {
+    return { success: false, provider: 'resend', error: 'RESEND_API_KEY is not configured' };
+  }
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: `${SENDER_NAME} <${RESEND_EMAIL_FROM}>`,
+      to: Array.isArray(to) ? to : [to],
       subject,
       html,
-    });
-    console.log(`📧 Email sent to ${to}: ${subject} (msgId: ${info.messageId})`);
-    return { success: true, messageId: info.messageId };
+    }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const errorMessage = data?.message || data?.error || `Resend API error (${response.status})`;
+    return { success: false, provider: 'resend', error: errorMessage };
+  }
+
+  return { success: true, provider: 'resend', messageId: data?.id || null };
+};
+
+export const sendEmail = async ({ to, subject, html }) => {
+  const smtpRetries = Math.max(1, parseInt(process.env.SMTP_RETRIES || '2'));
+  const smtpRetryDelayMs = parseInt(process.env.SMTP_RETRY_DELAY_MS || '600');
+
+  for (let attempt = 1; attempt <= smtpRetries; attempt++) {
+    try {
+      const result = await sendViaSmtp({ to, subject, html });
+      console.log(`📧 Email sent via SMTP to ${to}: ${subject} (msgId: ${result.messageId})`);
+      return result;
+    } catch (err) {
+      console.error(`❌ SMTP send failed (attempt ${attempt}/${smtpRetries}) for ${to}:`, err.message);
+      if (attempt < smtpRetries) {
+        await delay(smtpRetryDelayMs);
+      }
+    }
+  }
+
+  try {
+    const fallback = await sendViaResend({ to, subject, html });
+    if (fallback.success) {
+      console.log(`📧 Email sent via Resend fallback to ${to}: ${subject} (msgId: ${fallback.messageId || 'n/a'})`);
+      return fallback;
+    }
+    console.error(`❌ Resend fallback failed for ${to}:`, fallback.error);
+    return fallback;
   } catch (err) {
-    console.error(`❌ Failed to send email to ${to}:`, err.message);
-    console.error(err);
-    return { success: false, error: err.message };
+    console.error(`❌ Failed to send email via all providers to ${to}:`, err.message);
+    return { success: false, provider: 'none', error: err.message };
   }
 };
 
