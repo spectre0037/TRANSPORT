@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import useAuthStore from '../../stores/authStore';
-import logoImage from '../../assets/hiace (1).png';
+import logoImage from '../../assets/H-LOGO.png';
 
 const publicLinks = [
   { label: 'Home', href: '/#hero' },
