@@ -14,6 +14,7 @@ import uploadsRoutes from './routes/uploads.routes.js';
 import notificationsRoutes from './routes/notifications.routes.js';
 import privateBookingsRoutes from './routes/privateBookings.routes.js';
 import { authenticate, requireVerified } from './middleware/auth.middleware.js';
+import compression from 'compression';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -39,6 +40,7 @@ const corsOptions = {
 
 // Middleware
 app.use(cors(corsOptions));
+app.use(compression());
 app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));

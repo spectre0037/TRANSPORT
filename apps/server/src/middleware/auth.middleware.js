@@ -24,9 +24,11 @@ export const authenticate = (req, res, next) => {
 
 // Checks that the user has verified their email before accessing the route
 export const requireVerified = async (req, res, next) => {
-  if (!req.user) {
-    return res.status(401).json({ error: 'Authentication required' });
+  if (!req.user) return res.status(401).json({ error: 'Authentication required' });
+  if (!req.user.isEmailVerified) {
+    return res.status(403).json({ error: 'Email not verified', code: 'EMAIL_NOT_VERIFIED' });
   }
+  next();
   try {
     const [user] = await db.select({ isEmailVerified: users.isEmailVerified })
       .from(users).where(eq(users.id, req.user.id));
