@@ -24,6 +24,7 @@ const allowedOrigins = [
   'http://localhost:5174',
   'https://www.taleemxpress.app',
   'https://taleemxpress.app',
+  'https://transport-omega-ivory.vercel.app',
   ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
   ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim()).filter(Boolean) : []),
 ].filter(Boolean);
