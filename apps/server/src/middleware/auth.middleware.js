@@ -26,7 +26,6 @@ export const authenticate = (req, res, next) => {
 export const requireVerified = async (req, res, next) => {
   if (!req.user) return res.status(401).json({ error: 'Authentication required' });
 
-  next();
   try {
     const [user] = await db.select({ isEmailVerified: users.isEmailVerified })
       .from(users).where(eq(users.id, req.user.id));
