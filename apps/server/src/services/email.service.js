@@ -155,7 +155,7 @@ export const emailTemplates = {
     html: wrap(`
       <h2 style="margin:0 0 12px;color:#14213d;font-size:22px;line-height:1.3;">✅ Booking Confirmed</h2>
       ${infoCard(`${infoRow('Reference', bookingRef)}${infoRow('Route', route)}`)}
-      ${bodyText('Your seat is confirmed. Safe travels with TaleemXpress!')}
+      ${bodyText('Your seat has been booked')}
     `),
   }),
 

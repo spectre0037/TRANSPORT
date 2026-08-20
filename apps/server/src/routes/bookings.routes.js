@@ -385,6 +385,7 @@ router.put('/:id/status', authenticate, requireAdmin, async (req, res) => {
 });
 
 // Cancel booking
+// Cancel booking
 router.post('/:id/cancel', authenticate, async (req, res) => {
   try {
     const [booking] = await db.select().from(bookings)
@@ -393,19 +394,34 @@ router.post('/:id/cancel', authenticate, async (req, res) => {
     if (!booking) return res.status(404).json({ error: 'Booking not found' });
     if (booking.status === 'cancelled') return res.status(400).json({ error: 'Already cancelled' });
 
+    const [departure] = await db.select({ status: departures.status })
+      .from(departures).where(eq(departures.id, booking.departureId));
+
+    const isConfirmed = departure?.status === 'confirmed';
+
     await db.update(bookings).set({ status: 'cancelled', updatedAt: new Date() }).where(eq(bookings.id, req.params.id));
     await db.update(seats).set({ isBooked: false, bookedBy: null, gender: null }).where(eq(seats.id, booking.seatId));
-    await creditWallet(req.user.id, parseFloat(booking.totalAmount), `Refund for booking ${booking.bookingReference}`, booking.id);
+
+    let refundAmount = 0;
+    if (!isConfirmed) {
+      refundAmount = parseFloat(booking.totalAmount) * 0.5;
+      await creditWallet(req.user.id, refundAmount, `Refund for booking ${booking.bookingReference}`, booking.id);
+    }
 
     try {
       const [user] = await db.select({ email: users.email }).from(users).where(eq(users.id, req.user.id));
       await sendEmail({
         to: user.email,
-        ...emailTemplates.cancellationConfirmation(booking.bookingReference, booking.totalAmount),
+        ...emailTemplates.cancellationConfirmation(booking.bookingReference, refundAmount.toString()),
       });
     } catch (emailErr) { console.error('Email send failed:', emailErr); }
 
-    res.json({ message: 'Booking cancelled, refund credited to wallet' });
+    res.json({
+      message: isConfirmed
+        ? 'Booking cancelled. No refund is issued for confirmed departures.'
+        : 'Booking cancelled, refund credited to wallet',
+      refunded: refundAmount,
+    });
   } catch (err) {
     console.error('Cancel booking error:', err);
     res.status(500).json({ error: 'Internal server error' });

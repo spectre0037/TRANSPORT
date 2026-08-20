@@ -81,8 +81,8 @@ export default function AdminDepartures() {
                 <p className="font-semibold text-clay-text text-sm truncate">{d.route}</p>
                 <p className="text-[11px] text-clay-muted truncate">{d.fromCity} → {d.toCity}</p>
               </div>
-              <span className={`clay-badge text-[10px] flex-shrink-0 ${(d.busType||'bus') === 'hiace' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'}`}>
-                {(d.busType||'bus') === 'hiace' ? '🚐 Hiace' : '🚌 Bus'}
+              <span className={`clay-badge text-[10px] flex-shrink-0 ${(d.busType) === 'hiace' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'}`}>
+                {(d.busType) === 'hiace' ? '🚐 Hiace' : '🚌 Bus'}
               </span>
             </div>
 
@@ -116,8 +116,8 @@ export default function AdminDepartures() {
               <tr key={d.id}>
                 <td className="font-semibold">{d.route}</td>
                 <td>
-                  <span className={`clay-badge text-xs ${(d.busType||'bus') === 'hiace' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'}`}>
-                    {(d.busType||'bus') === 'hiace' ? '🚐 Hiace' : '🚌 Bus'}
+                  <span className={`clay-badge text-xs ${(d.BusType) === 'hiace' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700'}`}>
+                    {(d.BusType) === 'hiace' ? '🚐 Hiace' : '🚌 Bus'}
                   </span>
                 </td>
                 <td><span className="flex items-center gap-1"><MapPin size={12} />{d.fromCity} → {d.toCity}</span></td>

@@ -152,7 +152,7 @@ router.post('/', authenticate, requireVerified, requireAdmin, async (req, res) =
     }
 
     const vType = vehicleType || 'bus';
-    const actualSeatCount = vType === 'bus' ? 45 : (parseInt(seatCount) || 15);
+    const actualSeatCount = vType === 'bus' ? 45 : (parseInt(seatCount) || 13); // was 15, now 13
 
     const [departure] = await db.insert(departures).values({
       route, fromCity, toCity,
@@ -179,25 +179,27 @@ router.post('/', authenticate, requireVerified, requireAdmin, async (req, res) =
           seatNum++;
         }
       }
-    } else {
-      // Hiace: 2 columns (1 left + aisle + 1 right), rows calculated from seat count
-      const numRows = Math.ceil(actualSeatCount / 2);
-      const rowLetters = Array.from({ length: numRows }, (_, i) => String.fromCharCode(65 + i));
-      for (const row of rowLetters) {
-        const seatsInRow = Math.min(2, actualSeatCount - seatNum + 1);
-        for (let col = 1; col <= seatsInRow; col++) {
-          seatInserts.push({ departureId: departure.id, seatNumber: seatNum, row, column: col, isBooked: false, gender: null });
-          seatNum++;
-        }
+    }else {
+    // Hiace: front row = 1 passenger seat (driver sits beside it, not a bookable seat)
+    // then 4 rows of 3 seats each = 1 + 12 = 13 total
+    seatInserts.push({ departureId: departure.id, seatNumber: seatNum, row: 'A', column: 1, isBooked: false, gender: null });
+    seatNum++;
+
+    const bodyRows = ['B', 'C', 'D', 'E'];
+    for (const row of bodyRows) {
+      for (let col = 1; col <= 3; col++) {
+        seatInserts.push({ departureId: departure.id, seatNumber: seatNum, row, column: col, isBooked: false, gender: null });
+        seatNum++;
       }
     }
-
-    await db.insert(seats).values(seatInserts);
-    res.status(201).json({ ...departure, vehicleType: vType });
-  } catch (err) {
-    console.error('Create departure error:', err);
-    res.status(500).json({ error: 'Internal server error' });
   }
+
+  await db.insert(seats).values(seatInserts);
+  res.status(201).json({ ...departure, vehicleType: vType });
+} catch (err) {
+  console.error('Create departure error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+}
 });
 
 // PUT update departure — ADMIN + VERIFIED
