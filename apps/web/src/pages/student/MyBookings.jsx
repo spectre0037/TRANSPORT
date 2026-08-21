@@ -212,8 +212,7 @@ export default function MyBookingsPage() {
                   </div>
                 </div>
                 {activeTab === "upcoming" &&
-                  (b.status === "pending_approval" ||
-                    b.status === "approved") &&
+                  (b.status === "approved") &&
                   b.status !== "cancelled" && (
                     <div className="mt-4 pt-4 border-t border-clay-border flex flex-col gap-2 sm:flex-row">
                       <button
