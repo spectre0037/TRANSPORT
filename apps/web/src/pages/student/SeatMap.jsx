@@ -7,7 +7,6 @@ import toast from 'react-hot-toast';
 import useAuthStore from '../../stores/authStore';
 
 const BANK_ACCOUNTS = [
-  { id: 'allied', bankName: 'Allied Bank', accountNumber: '04770010149883140017', preferred: true },
   { id: 'jazzcash', bankName: 'Jazzcash', accountNumber: '03253601441', preferred: false },
 ];
 
