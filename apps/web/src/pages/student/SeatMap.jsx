@@ -319,11 +319,11 @@ export default function SeatMapPage() {
             <Upload className="mx-auto text-clay-primary" size={36} />
             <h3 className="font-bold text-clay-text text-lg">Upload Payment Screenshot</h3>
             <p className="text-sm text-clay-muted max-w-sm mx-auto">
-              Transfer <strong>PKR {price}</strong> to one of the TaleemXpress accounts below and upload the receipt screenshot.
+              Transfer <strong>PKR {price}</strong> to the TaleemXpress accounts below and upload the receipt screenshot.
             </p>
 
             {/* Bank account details — click to copy */}
-            <div className="grid grid-cols-1 gap-3 text-left sm:grid-cols-2 max-w-lg mx-auto">
+            <div className="grid grid-cols-1 gap-3 text-left sm:grid-cols-1 max-w-lg mx-auto">
               {BANK_ACCOUNTS.map((account) => (
                 <CopyableAccountCard key={account.id} account={account} />
               ))}
